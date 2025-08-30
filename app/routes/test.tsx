@@ -2,7 +2,10 @@ import { Layout } from "../components/Layout";
 import { TestPage } from "../page/TestPage";
 
 export function meta() {
-  return [{ title: "Test - OHW" }, { name: "description", content: "OHW Hardware Wallet Test Page" }];
+  return [
+    { title: "Test - OHW" },
+    { name: "description", content: "OHW Hardware Wallet Test Page" },
+  ];
 }
 
 export default function Test() {

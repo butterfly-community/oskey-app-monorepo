@@ -15,6 +15,6 @@ export default defineConfig({
     include: ["web-serial-polyfill"],
   },
   build: {
-    target: 'esnext',
+    target: "esnext",
   },
 });

@@ -12,7 +12,7 @@ export class UsbManager {
     this.messageHandler = handler;
   }
 
-  onReadingState(handler: (reading: boolean) => void): void { 
+  onReadingState(handler: (reading: boolean) => void): void {
     this.readingStateHandler = handler;
   }
 }

@@ -12,7 +12,8 @@ export function Home() {
             </span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            A secure, open-source hardware wallet solution providing comprehensive protection for your digital assets
+            A secure, open-source hardware wallet solution providing
+            comprehensive protection for your digital assets
           </p>
           <div className="flex justify-center space-x-4">
             <Link
@@ -39,19 +40,22 @@ export function Home() {
           <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
             <h3 className="text-xl font-semibold mb-4">Secure & Reliable</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Utilizing advanced encryption technology to ensure your private keys are securely stored and never connected to the internet
+              Utilizing advanced encryption technology to ensure your private
+              keys are securely stored and never connected to the internet
             </p>
           </div>
           <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
             <h3 className="text-xl font-semibold mb-4">Open Source</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Fully open-source hardware design and software implementation, maintained by the community for enhanced security and trust
+              Fully open-source hardware design and software implementation,
+              maintained by the community for enhanced security and trust
             </p>
           </div>
           <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
             <h3 className="text-xl font-semibold mb-4">User Friendly</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Intuitive user interface and simple operation process making blockchain technology accessible to everyone
+              Intuitive user interface and simple operation process making
+              blockchain technology accessible to everyone
             </p>
           </div>
         </div>
