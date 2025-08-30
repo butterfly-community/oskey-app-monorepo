@@ -440,13 +440,9 @@ export function TestPage() {
     const message = store.get(messageAtom);
     console.log("message", message);
 
-    let bytes = new Uint8Array();
-
-    if (!message.startsWith("0x")) {
-      bytes = ethers.getBytesCopy(ethers.hashMessage(message));
-    } else {
-      bytes = ethers.getBytesCopy(message);
-    }
+    const bytes = message.startsWith("0x")
+      ? ethers.getBytesCopy(message)
+      : ethers.getBytesCopy(ethers.hashMessage(message));
 
     const signRequest = ReqData.create({
       payload: {
@@ -470,14 +466,16 @@ export function TestPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       {Dialog}
-      
+
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-900">OHW Test Page</h1>
           <div className="flex gap-4">
             <button
-              onClick={() => window.open("https://espressif.github.io/esptool-js/", "_blank")}
+              onClick={() =>
+                window.open("https://espressif.github.io/esptool-js/", "_blank")
+              }
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Flash Firmware
@@ -485,10 +483,14 @@ export function TestPage() {
             <button
               onClick={handleConnect}
               className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                connected ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"
+                connected
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-gray-600 hover:bg-gray-700"
               } text-white transition-colors`}
             >
-              <div className={`w-2 h-2 rounded-full ${connected ? "bg-green-200" : "bg-gray-300"}`} />
+              <div
+                className={`w-2 h-2 rounded-full ${connected ? "bg-green-200" : "bg-gray-300"}`}
+              />
               <span>{connected ? "Connected" : "Connect"}</span>
             </button>
           </div>
@@ -499,38 +501,65 @@ export function TestPage() {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-amber-200 rounded-lg">
-                <svg className="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <svg
+                  className="w-6 h-6 text-amber-700"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-amber-900">Development Environment Notice</h2>
+              <h2 className="text-2xl font-bold text-amber-900">
+                Development Environment Notice
+              </h2>
             </div>
-            
+
             <div className="space-y-4">
               <div className="bg-white bg-opacity-50 rounded-lg p-5 border border-amber-200">
-                <h3 className="text-lg font-semibold text-amber-800 mb-3">Security Precautions</h3>
+                <h3 className="text-lg font-semibold text-amber-800 mb-3">
+                  Security Precautions
+                </h3>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                    <span className="text-amber-700">Do not use real assets or import production mnemonics in this environment</span>
+                    <span className="text-amber-700">
+                      Do not use real assets or import production mnemonics in
+                      this environment
+                    </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                    <span className="text-amber-700">All data may be cleared during the development phase</span>
+                    <span className="text-amber-700">
+                      All data may be cleared during the development phase
+                    </span>
                   </li>
                 </ul>
               </div>
 
               <div className="bg-white bg-opacity-50 rounded-lg p-5 border border-amber-200">
-                <h3 className="text-lg font-semibold text-amber-800 mb-3">Development Board Status</h3>
+                <h3 className="text-lg font-semibold text-amber-800 mb-3">
+                  Development Board Status
+                </h3>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                    <span className="text-amber-700">Current OHW development board is running without security locks or SE security components enabled. </span>
+                    <span className="text-amber-700">
+                      Current OHW development board is running without security
+                      locks or SE security components enabled.{" "}
+                    </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                    <span className="text-amber-700">Stay tuned for upcoming tutorials on chip security locking and high-security hardware wallet solutions.</span>
+                    <span className="text-amber-700">
+                      Stay tuned for upcoming tutorials on chip security locking
+                      and high-security hardware wallet solutions.
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -540,12 +569,22 @@ export function TestPage() {
               <a
                 href="https://github.com/butterfly-communtiy/ohw-elf-firmware/tree/master/doc/start"
                 target="_blank"
-                rel="noopener noreferrer" 
+                rel="noopener noreferrer"
                 className="inline-flex items-center px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors duration-200 group"
               >
                 <span className="font-medium">View Documentation</span>
-                <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </a>
             </div>
@@ -561,7 +600,9 @@ export function TestPage() {
                 <span className="text-gray-600">OHW Status:</span>
                 <div>
                   {ohw ? (
-                    <span className="text-green-600">OK Version: {version}</span>
+                    <span className="text-green-600">
+                      OK Version: {version}
+                    </span>
                   ) : (
                     <span className="text-red-600">Not Found</span>
                   )}
@@ -586,10 +627,14 @@ export function TestPage() {
 
           {/* Wallet Initialization Card */}
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-4">Wallet Initialization</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Wallet Initialization
+            </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mnemonic</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mnemonic
+                </label>
                 <textarea
                   className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                   rows={4}
@@ -599,7 +644,9 @@ export function TestPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
                 <input
                   type="password"
                   className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -632,7 +679,9 @@ export function TestPage() {
             <h2 className="text-xl font-semibold mb-4">Address Management</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Derivation Path</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Derivation Path
+                </label>
                 <input
                   type="text"
                   className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -649,7 +698,9 @@ export function TestPage() {
                 </button>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Address
+                </label>
                 <input
                   type="text"
                   className="w-full p-2 border rounded-lg bg-gray-50"
@@ -665,7 +716,9 @@ export function TestPage() {
             <h2 className="text-xl font-semibold mb-4">Message Signing</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Message
+                </label>
                 <textarea
                   className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                   rows={4}
@@ -682,7 +735,9 @@ export function TestPage() {
                 </button>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Signature</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Signature
+                </label>
                 <input
                   type="text"
                   className="w-full p-2 border rounded-lg bg-gray-50"
@@ -699,7 +754,9 @@ export function TestPage() {
           <h2 className="text-xl font-semibold mb-4">WalletConnect</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">WalletConnect URI</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                WalletConnect URI
+              </label>
               <div className="flex gap-4">
                 <input
                   type="text"
@@ -728,7 +785,9 @@ export function TestPage() {
                     <div key={session.topic} className="border rounded-lg p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <div className="font-medium">{session.peer.metadata.name}</div>
+                          <div className="font-medium">
+                            {session.peer.metadata.name}
+                          </div>
                           <div className="text-sm text-gray-500">
                             Topic: {session.topic.slice(0, 10)}...
                           </div>
@@ -736,7 +795,8 @@ export function TestPage() {
                             URL: {session.peer.metadata.url}
                           </div>
                           <div className="text-sm text-gray-500">
-                            Chains: {session.namespaces.eip155.chains?.join(", ")}
+                            Chains:{" "}
+                            {session.namespaces.eip155.chains?.join(", ")}
                           </div>
                         </div>
                         <button
