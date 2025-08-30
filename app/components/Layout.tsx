@@ -9,17 +9,23 @@ export function Header() {
             to="/"
             className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
           >
-            OHW
+            OSKey
           </Link>
           <div className="flex items-center space-x-6">
             <Link
+              to="/blog"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+            >
+              Blog
+            </Link>
+             <Link
               to="/test"
               className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
             >
               Test
             </Link>
             <Link
-              to="https://github.com/butterfly-communtiy/ohw-elf-firmware/tree/master/doc/start"
+              to="https://github.com/butterfly-community/ohw-firmware/tree/master/doc/start"
               className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
             >
               Documentation
@@ -41,7 +47,7 @@ export function Footer() {
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a
-              href="https://github.com/butterfly-communtiy/ohw-elf-firmware"
+              href="https://github.com/butterfly-community/ohw-firmware"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
@@ -49,12 +55,12 @@ export function Footer() {
               GitHub
             </a>
             <a
-              href="https://twitter.com"
+              href="https://x.com/OSKeyHW"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
             >
-              Twitter
+              X
             </a>
           </div>
         </div>

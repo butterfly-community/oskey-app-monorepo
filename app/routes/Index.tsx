@@ -3,7 +3,7 @@ import { Home } from "../components/Home";
 
 export function meta() {
   return [
-    { title: "OHW - Open Hardware Wallet" },
+    { title: "OSKey - Open Hardware Wallet" },
     {
       name: "description",
       content: "Secure, open-source hardware wallet solution",
