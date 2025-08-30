@@ -3,7 +3,7 @@ import { TestPage } from "../page/TestPage";
 
 export function meta() {
   return [
-    { title: "Test - OHW" },
+    { title: "Test - OSKey" },
     { name: "description", content: "OHW Hardware Wallet Test Page" },
   ];
 }

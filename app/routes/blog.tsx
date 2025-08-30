@@ -2,7 +2,7 @@ import { Layout } from "../components/Layout";
 
 export function meta() {
   return [
-    { title: "Test - OSKey" },
+    { title: "OSKey" },
     { name: "description", content: "OSKey Hardware Wallet Test Page" },
   ];
 }
@@ -17,7 +17,7 @@ export default function Test() {
         }}
       >
         <div
-          onClick={() => window.location.href = "/blog/what-is-oskey"}
+          onClick={() => (window.location.href = "/blog/what-is-oskey")}
           style={{
             border: "1px solid #e0e0e0",
             borderRadius: "12px",
