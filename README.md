@@ -21,7 +21,7 @@ The Open Hardware Wallet frontend application provides a web interface for inter
 ### Installation
 
 ```bash
-git clone https://github.com/butterfly-community/ohw-app-monorepo
+git clone https://github.com/butterfly-community/oskey-app-monorepo
 cd ohw-app-monorepo
 pnpm install
 pnpm run dev

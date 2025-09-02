@@ -25,7 +25,7 @@ export function Header() {
               Test
             </Link>
             <Link
-              to="https://github.com/butterfly-community/ohw-firmware/tree/master/doc/start"
+              to="https://github.com/butterfly-community/oskey-firmware/tree/master/doc/start"
               className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
             >
               Documentation
@@ -47,7 +47,7 @@ export function Footer() {
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a
-              href="https://github.com/butterfly-community/ohw-firmware"
+              href="https://github.com/butterfly-community/oskey-firmware"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"

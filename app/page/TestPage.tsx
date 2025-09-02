@@ -25,9 +25,9 @@ const core = new Core({
 });
 
 const metadata = {
-  name: "OHW",
+  name: "OSKey",
   description: "WalletKit",
-  url: "https://ohw-app.vercel.app",
+  url: "https://www.oskey.xyz/test",
   icons: ["https://avatars.githubusercontent.com/u/122866640"],
 };
 
@@ -567,7 +567,7 @@ export function TestPage() {
 
             <div className="mt-6 text-center">
               <a
-                href="https://github.com/butterfly-community/ohw-firmware/tree/master/doc/start"
+                href="https://github.com/butterfly-community/oskey-firmware/tree/master/doc/start"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors duration-200 group"
@@ -612,7 +612,7 @@ export function TestPage() {
                 <div className="text-red-600 text-sm">
                   Missing ohw firmware. Please{" "}
                   <a
-                    href="https://github.com/butterfly-community/ohw-firmware"
+                    href="https://github.com/butterfly-community/oskey-firmware"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline"
