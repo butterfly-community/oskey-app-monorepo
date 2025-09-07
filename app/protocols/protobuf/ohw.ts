@@ -227,6 +227,10 @@ export interface SignRequest {
    * @generated from protobuf field: bytes pre_hash = 4;
    */
   preHash: Uint8Array;
+  /**
+   * @generated from protobuf field: string debug_text = 5;
+   */
+  debugText: string;
 }
 /**
  * @generated from protobuf message ohw.SignResponse
@@ -1300,6 +1304,7 @@ class SignRequest$Type extends MessageType<SignRequest> {
       { no: 2, name: "path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
       { no: 3, name: "message", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
       { no: 4, name: "pre_hash", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+      { no: 5, name: "debug_text", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
     ]);
   }
   create(value?: PartialMessage<SignRequest>): SignRequest {
@@ -1308,6 +1313,7 @@ class SignRequest$Type extends MessageType<SignRequest> {
     message.path = "";
     message.message = new Uint8Array(0);
     message.preHash = new Uint8Array(0);
+    message.debugText = "";
     if (value !== undefined)
       reflectionMergePartial<SignRequest>(this, message, value);
     return message;
@@ -1334,6 +1340,9 @@ class SignRequest$Type extends MessageType<SignRequest> {
           break;
         case /* bytes pre_hash */ 4:
           message.preHash = reader.bytes();
+          break;
+        case /* string debug_text */ 5:
+          message.debugText = reader.string();
           break;
         default:
           let u = options.readUnknownField;
@@ -1370,6 +1379,9 @@ class SignRequest$Type extends MessageType<SignRequest> {
     /* bytes pre_hash = 4; */
     if (message.preHash.length)
       writer.tag(4, WireType.LengthDelimited).bytes(message.preHash);
+    /* string debug_text = 5; */
+    if (message.debugText !== "")
+      writer.tag(5, WireType.LengthDelimited).string(message.debugText);
     let u = options.writeUnknownFields;
     if (u !== false)
       (u == true ? UnknownFieldHandler.onWrite : u)(

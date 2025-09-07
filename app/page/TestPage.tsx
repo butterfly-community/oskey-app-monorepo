@@ -43,6 +43,7 @@ export const signatureAtom = atom<string>("");
 export const messageAtom = atom<string>("");
 export const addressAtom = atom<string>("");
 export const pathAtom = atom<string>("m/44'/60'/0'/0/0");
+export const debugText = atom<string>("");
 
 export function TestPage() {
   const [serialManager] = useState(() => new SerialManager());
@@ -233,6 +234,9 @@ export function TestPage() {
         const formatObject = (obj: object) => {
           return Object.entries(obj)
             .map(([key, value]) => {
+              if (key === "data" || key === "to") {
+                return `${key}: ${value}`;
+              }
               if (typeof value === "string" && value.startsWith("0x")) {
                 const decimalValue = parseInt(value, 16);
                 return `${key}: ${decimalValue}`;
@@ -253,6 +257,7 @@ export function TestPage() {
         const unsignedHash = tx.unsignedHash;
 
         store.set(messageAtom, unsignedHash);
+        store.set(debugText, message);
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -458,6 +463,7 @@ export function TestPage() {
           preHash: bytes,
           path: store.get(pathAtom),
           message: bytes,
+          debugText: store.get(debugText),
         }),
       },
     });
