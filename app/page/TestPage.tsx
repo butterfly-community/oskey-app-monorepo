@@ -232,7 +232,13 @@ export function TestPage() {
 
         const formatObject = (obj: object) => {
           return Object.entries(obj)
-            .map(([key, value]) => `${key}: ${value}`)
+            .map(([key, value]) => {
+              if (typeof value === "string" && value.startsWith("0x")) {
+                const decimalValue = parseInt(value, 16);
+                return `${key}: ${decimalValue}`;
+              }
+              return `${key}: ${value}`;
+            })
             .join("\n");
         };
 
