@@ -200,12 +200,22 @@ export function TestPage() {
         }
 
         store.set(messageAtom, data);
+        store.set(debugText, message);
+        store.set(signatureAtom, "");
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         signMessage();
 
-        await new Promise((resolve) => setTimeout(resolve, 6000));
+        let mark = 0;
+
+        while (true) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          if (store.get(signatureAtom) != "" || mark > 60) {
+            break;
+          }
+          mark = mark + 1;
+        }
 
         const response = {
           id,
@@ -235,13 +245,13 @@ export function TestPage() {
           return Object.entries(obj)
             .map(([key, value]) => {
               if (key === "data" || key === "to") {
-                return `${key}: ${value}`;
+                return `${key}:\n${value}\n`;
               }
               if (typeof value === "string" && value.startsWith("0x")) {
                 const decimalValue = parseInt(value, 16);
-                return `${key}: ${decimalValue}`;
+                return `${key}:\n${decimalValue}\n`;
               }
-              return `${key}: ${value}`;
+              return `${key}:\n${value}\n`;
             })
             .join("\n");
         };
@@ -258,12 +268,21 @@ export function TestPage() {
 
         store.set(messageAtom, unsignedHash);
         store.set(debugText, message);
+        store.set(signatureAtom, "");
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         signMessage();
 
-        await new Promise((resolve) => setTimeout(resolve, 6000));
+        let mark = 0;
+
+        while (true) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          if (store.get(signatureAtom) != "" || mark > 60) {
+            break;
+          }
+          mark = mark + 1;
+        }
 
         const sig = Transaction.from({
           ...newData,
