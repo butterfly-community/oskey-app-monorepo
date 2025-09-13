@@ -230,13 +230,39 @@ export function TestPage() {
       if (params.request.method == "eth_sendTransaction") {
         const { from, ...newData } = params.request.params[0];
 
-        if (from != store.get(addressAtom)) {
+        if (from.toLowerCase() != store.get(addressAtom).toLowerCase()) {
           alert("Address not this use path! please check!");
           return;
         }
 
+        const provider = ethers.getDefaultProvider(
+          parseInt(params.chainId.substring(7)),
+          {
+            infura: import.meta.env.VITE_INFURA_ID,
+            exclusive: "infura",
+          },
+        );
+
         if (!newData.chainId) {
           newData.chainId = parseInt(params.chainId.substring(7));
+        }
+
+        if (!newData.nonce) {
+          const nonce = await provider.getTransactionCount(
+            store.get(addressAtom),
+            "latest",
+          );
+          newData.nonce = nonce;
+        }
+
+        const feeData = await provider.getFeeData();
+
+        if (!newData.gasLimit) {
+          newData.gasLimit = ethers.toBigInt(21000);
+        }
+
+        if (!newData.gasPrice) {
+          newData.gasPrice = feeData.maxFeePerGas ?? feeData.gasPrice;
         }
 
         const tx = Transaction.from(newData);
@@ -288,14 +314,6 @@ export function TestPage() {
           ...newData,
           signature: store.get(signatureAtom),
         });
-
-        const provider = ethers.getDefaultProvider(
-          parseInt(params.chainId.substring(7)),
-          {
-            infura: import.meta.env.VITE_INFURA_ID,
-            exclusive: "infura",
-          },
-        );
 
         // const provider = new ethers.JsonRpcProvider(
         //   "https://sepolia.infura.io/v3/" + import.meta.env.VITE_INFURA_ID,
