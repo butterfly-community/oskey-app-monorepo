@@ -262,7 +262,7 @@ export function TestPage() {
         }
 
         if (!newData.gasPrice) {
-          newData.gasPrice = feeData.maxFeePerGas ?? feeData.gasPrice;
+          newData.gasPrice = feeData.gasPrice ?? feeData.maxFeePerGas;
         }
 
         const tx = Transaction.from(newData);
@@ -365,7 +365,7 @@ export function TestPage() {
               "eth_sendTransaction",
               "eth_signTransaction",
               "eth_sign",
-              "eth_signTypedData",
+              // "eth_signTypedData",
             ],
             events: ["accountsChanged", "chainChanged"],
             accounts: chains.map(
