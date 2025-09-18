@@ -30,8 +30,8 @@ importers:
         specifier: ^2.17.3
         version: 2.17.3
       ethers:
-        specifier: ^6.13.4
-        version: 6.13.4
+        specifier: ^6.15.0
+        version: 6.15.0
       isbot:
         specifier: ^5.1.17
         version: 5.1.17
@@ -1425,8 +1425,8 @@ packages:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
 
-  ethers@6.13.4:
-    resolution: {integrity: sha512-21YtnZVg4/zKkCQPjrDj38B1r4nQvTZLopUGMLQ1ePU2zV/joCfDC3t3iKQjWRzjjjbzR+mdAIoikeBRNkdllA==}
+  ethers@6.15.0:
+    resolution: {integrity: sha512-Kf/3ZW54L4UT0pZtsY/rf+EkBU7Qi5nnhonjUb8yTXcxH3cdcWrV2cRyk0Xk/4jK6OoHhxxZHriyhje20If2hQ==}
     engines: {node: '>=14.0.0'}
 
   events@3.3.0:
@@ -4731,7 +4731,7 @@ snapshots:
 
   etag@1.8.1: {}
 
-  ethers@6.13.4:
+  ethers@6.15.0:
     dependencies:
       '@adraffy/ens-normalize': 1.10.1
       '@noble/curves': 1.2.0

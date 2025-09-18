@@ -25,7 +25,7 @@ export const DEFAULT_SERIAL_CONFIG: SerialConfig = {
     MAGIC: new Uint8Array([0xe2, 0x82, 0xbf]),
     HEADER_LENGTH: 5,
     LENGTH_BYTES: 2,
-    MAX_LENGTH: 1024,
+    MAX_LENGTH: 131072 + 7,
   },
 };
 

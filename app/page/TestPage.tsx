@@ -353,13 +353,12 @@ export function TestPage() {
           newData.nonce = nonce;
         }
 
-        const feeData = await provider.getFeeData();
-
         if (!newData.gasLimit) {
           newData.gasLimit = ethers.toBigInt(21000);
         }
 
         if (!newData.gasPrice) {
+            const feeData = await provider.getFeeData();
           newData.gasPrice = feeData.gasPrice ?? feeData.maxFeePerGas;
         }
 
