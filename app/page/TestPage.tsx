@@ -138,7 +138,7 @@ export function TestPage() {
         case "versionResponse": {
           const version = data.payload.versionResponse;
           
-          const MINIMUM_VERSION = "0.2.3";
+          const MINIMUM_VERSION = "0.3.0";
           
           if (!isVersionCompatible(version.version, MINIMUM_VERSION)) {
             const upgradeMessage = getVersionUpgradeMessage(version.version, MINIMUM_VERSION);
@@ -267,7 +267,17 @@ export function TestPage() {
         const requestParamsMessage = params.request.params[0];
         const data = ethers.toUtf8String(requestParamsMessage);
 
-        const message = "Do you agree sign message?" + "\n\n" + data;
+        // 格式化长消息，添加适当的换行
+        const formatMessage = (msg: string) => {
+          if (msg.length > 80) {
+            // 每80个字符添加一个换行，或在空格处换行
+            return msg.replace(/(.{80})/g, "$1\n").replace(/\n /g, "\n");
+          }
+          return msg;
+        };
+
+        const formattedData = formatMessage(data);
+        const message = "Do you agree sign message?" + "\n\n" + formattedData;
 
         // alert(message);
         if (!(await confirm(message))) {
@@ -368,11 +378,18 @@ export function TestPage() {
           return Object.entries(obj)
             .map(([key, value]) => {
               if (key === "data" || key === "to") {
+                // 对于长地址或数据，添加换行以提高可读性
+                const strValue = String(value);
+                if (strValue.length > 60) {
+                  // 每60个字符换行
+                  const chunks = strValue.match(/.{1,60}/g) || [strValue];
+                  return `${key}:\n${chunks.join('\n')}\n`;
+                }
                 return `${key}:\n${value}\n`;
               }
               if (typeof value === "string" && value.startsWith("0x")) {
                 const decimalValue = parseInt(value, 16);
-                return `${key}:\n${decimalValue}\n`;
+                return `${key}:\n${decimalValue} (${value})\n`;
               }
               return `${key}:\n${value}\n`;
             })
@@ -1114,16 +1131,20 @@ export default function useConfirm() {
   };
 
   const Dialog = show ? (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        <p className="my-4 whitespace-pre-line">{message}</p>
-        <div className="flex gap-2 justify-end">
-          <button onClick={handleCancel} className="px-4 py-2 border rounded">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
+        <div className="flex-1 overflow-auto">
+          <p className="my-4 whitespace-pre-line break-words text-sm leading-relaxed">
+            {message}
+          </p>
+        </div>
+        <div className="flex gap-2 justify-end mt-4 pt-4 border-t">
+          <button onClick={handleCancel} className="px-4 py-2 border rounded hover:bg-gray-50">
             Cancel
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Ok
           </button>

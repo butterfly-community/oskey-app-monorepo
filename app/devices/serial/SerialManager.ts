@@ -25,7 +25,7 @@ export const DEFAULT_SERIAL_CONFIG: SerialConfig = {
     MAGIC: new Uint8Array([0xe2, 0x82, 0xbf]),
     HEADER_LENGTH: 5,
     LENGTH_BYTES: 2,
-    MAX_LENGTH: 131072 + 7,
+    MAX_LENGTH: 12288 + 7,
   },
 };
 
@@ -53,10 +53,10 @@ export class SerialManager {
     if (!navigator.serial) {
       throw new Error("Not Support WebSerial API");
     }
-    
+
     // Always disconnect previous connection before connecting
     await this.close();
-    
+
     // Always request user to select port
     this.port = await navigator.serial.requestPort();
 
@@ -180,9 +180,13 @@ export class SerialManager {
   }
 
   async sendProtobuf(data: ReqData): Promise<void> {
-    console.log(data.payload);
-    const bytes = ReqData.toBinary(data);
-    await this.send(bytes);
+    try {
+      console.log(data.payload);
+      const bytes = ReqData.toBinary(data);
+      await this.send(bytes);
+    } catch (error) {
+      console.error("Send Protobuf Error:", error);
+    }
   }
 
   publicKeyToAddress(publicKey: Uint8Array): string {
