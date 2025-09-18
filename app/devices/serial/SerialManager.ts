@@ -159,10 +159,17 @@ export class SerialManager {
 
     try {
       const writer = this.port.writable.getWriter();
-      await writer.write(message);
-      await writer.ready;
-      console.log("Sent:", message);
-      writer.releaseLock();
+      try {
+        const chunkSize = 4;
+        for (let i = 0; i < message.length; i += chunkSize) {
+          const chunk = message.slice(i, i + chunkSize);
+          await writer.write(chunk);
+          await writer.ready;
+        }
+        console.log("Sent:", message);
+      } finally {
+        writer.releaseLock();
+      }
     } catch (error) {
       console.error("Write Port Error:", error);
       throw error;
