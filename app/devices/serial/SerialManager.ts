@@ -125,7 +125,7 @@ export class SerialManager {
       );
 
       const data = ResData.fromBinary(message);
-
+      console.log("Received:", data);
       this.messageHandler?.(data);
 
       this.buffer = this.buffer.slice(
@@ -159,11 +159,9 @@ export class SerialManager {
 
     try {
       const writer = this.port.writable.getWriter();
-      // TODO: esp32c3 builtin usb serial/jtag fix
-      for (let i = 0; i < message.length; i++) {
-        await writer.write(new Uint8Array([message[i]]));
-        await writer.ready;
-      }
+      await writer.write(message);
+      await writer.ready;
+      console.log("Sent:", message);
       writer.releaseLock();
     } catch (error) {
       console.error("Write Port Error:", error);

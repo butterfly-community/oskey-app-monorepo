@@ -15,459 +15,426 @@ import { MessageType } from "@protobuf-ts/runtime";
  * @generated from protobuf message ohw.ReqData
  */
 export interface ReqData {
-  /**
-   * @generated from protobuf oneof: payload
-   */
-  payload:
-    | {
+    /**
+     * @generated from protobuf oneof: payload
+     */
+    payload: {
         oneofKind: "unknown";
         /**
          * @generated from protobuf field: ohw.Unknown unknown = 2;
          */
         unknown: Unknown;
-      }
-    | {
+    } | {
         oneofKind: "versionRequest";
         /**
          * @generated from protobuf field: ohw.VersionRequest version_request = 10;
          */
         versionRequest: VersionRequest;
-      }
-    | {
+    } | {
         oneofKind: "initCustomRequest";
         /**
          * @generated from protobuf field: ohw.InitWalletCustomRequest init_custom_request = 30;
          */
         initCustomRequest: InitWalletCustomRequest;
-      }
-    | {
+    } | {
         oneofKind: "initRequest";
         /**
          * @generated from protobuf field: ohw.InitWalletRequest init_request = 40;
          */
         initRequest: InitWalletRequest;
-      }
-    | {
+    } | {
         oneofKind: "derivePublicKeyRequest";
         /**
          * @generated from protobuf field: ohw.DerivePublicKeyRequest derive_public_key_request = 50;
          */
         derivePublicKeyRequest: DerivePublicKeyRequest;
-      }
-    | {
-        oneofKind: "signRequest";
+    } | {
+        oneofKind: "signEthRequest";
         /**
-         * @generated from protobuf field: ohw.SignRequest sign_request = 60;
+         * @generated from protobuf field: ohw.SignEthRequest sign_eth_request = 70;
          */
-        signRequest: SignRequest;
-      }
-    | {
+        signEthRequest: SignEthRequest;
+    } | {
         oneofKind: undefined;
-      };
+    };
 }
 /**
  * @generated from protobuf message ohw.ResData
  */
 export interface ResData {
-  /**
-   * @generated from protobuf oneof: payload
-   */
-  payload:
-    | {
+    /**
+     * @generated from protobuf oneof: payload
+     */
+    payload: {
+        oneofKind: "errorResponse";
+        /**
+         * @generated from protobuf field: ohw.ErrorResponse error_response = 1;
+         */
+        errorResponse: ErrorResponse;
+    } | {
         oneofKind: "unknown";
         /**
          * @generated from protobuf field: ohw.Unknown unknown = 2;
          */
         unknown: Unknown;
-      }
-    | {
+    } | {
         oneofKind: "versionResponse";
         /**
          * @generated from protobuf field: ohw.VersionResponse version_response = 11;
          */
         versionResponse: VersionResponse;
-      }
-    | {
+    } | {
         oneofKind: "initWalletResponse";
         /**
          * @generated from protobuf field: ohw.InitWalletResponse init_wallet_response = 31;
          */
         initWalletResponse: InitWalletResponse;
-      }
-    | {
+    } | {
         oneofKind: "derivePublicKeyResponse";
         /**
          * @generated from protobuf field: ohw.DerivePublicKeyResponse derive_public_key_response = 51;
          */
         derivePublicKeyResponse: DerivePublicKeyResponse;
-      }
-    | {
+    } | {
         oneofKind: "signResponse";
         /**
          * @generated from protobuf field: ohw.SignResponse sign_response = 61;
          */
         signResponse: SignResponse;
-      }
-    | {
+    } | {
+        oneofKind: "waitForUserActionResponse";
+        /**
+         * @generated from protobuf field: ohw.WaitForUserActionResponse wait_for_user_action_response = 80;
+         */
+        waitForUserActionResponse: WaitForUserActionResponse;
+    } | {
         oneofKind: undefined;
-      };
+    };
 }
 /**
  * @generated from protobuf message ohw.Unknown
  */
-export interface Unknown {}
+export interface Unknown {
+}
 /**
  * @generated from protobuf message ohw.VersionRequest
  */
-export interface VersionRequest {}
+export interface VersionRequest {
+}
 /**
  * @generated from protobuf message ohw.VersionResponse
  */
 export interface VersionResponse {
-  /**
-   * @generated from protobuf field: string version = 1;
-   */
-  version: string;
-  /**
-   * @generated from protobuf field: ohw.Features features = 2;
-   */
-  features?: Features;
+    /**
+     * @generated from protobuf field: string version = 1;
+     */
+    version: string;
+    /**
+     * @generated from protobuf field: ohw.Features features = 2;
+     */
+    features?: Features;
 }
 /**
  * @generated from protobuf message ohw.Features
  */
 export interface Features {
-  /**
-   * @generated from protobuf field: bool initialized = 10;
-   */
-  initialized: boolean;
-  /**
-   * @generated from protobuf field: bool has_hardware_random = 20;
-   */
-  hasHardwareRandom: boolean;
+    /**
+     * @generated from protobuf field: bool initialized = 10;
+     */
+    initialized: boolean;
+    /**
+     * @generated from protobuf field: bytes support_mask = 20;
+     */
+    supportMask: Uint8Array;
 }
 /**
  * @generated from protobuf message ohw.InitWalletCustomRequest
  */
 export interface InitWalletCustomRequest {
-  /**
-   * @generated from protobuf field: string words = 2;
-   */
-  words: string;
-  /**
-   * @generated from protobuf field: string password = 3;
-   */
-  password: string;
+    /**
+     * @generated from protobuf field: string words = 2;
+     */
+    words: string;
+    /**
+     * @generated from protobuf field: string password = 3;
+     */
+    password: string;
 }
 /**
  * @generated from protobuf message ohw.InitWalletRequest
  */
 export interface InitWalletRequest {
-  /**
-   * @generated from protobuf field: uint32 length = 1;
-   */
-  length: number;
-  /**
-   * @generated from protobuf field: string password = 2;
-   */
-  password: string;
-  /**
-   * @generated from protobuf field: optional bytes seed = 3;
-   */
-  seed?: Uint8Array;
+    /**
+     * @generated from protobuf field: uint32 length = 1;
+     */
+    length: number;
+    /**
+     * @generated from protobuf field: string password = 2;
+     */
+    password: string;
+    /**
+     * @generated from protobuf field: optional bytes seed = 3;
+     */
+    seed?: Uint8Array;
 }
 /**
  * @generated from protobuf message ohw.InitWalletResponse
  */
 export interface InitWalletResponse {
-  /**
-   * @generated from protobuf field: optional string mnemonic = 1;
-   */
-  mnemonic?: string;
+    /**
+     * @generated from protobuf field: optional string mnemonic = 1;
+     */
+    mnemonic?: string;
 }
 /**
  * @generated from protobuf message ohw.DerivePublicKeyRequest
  */
 export interface DerivePublicKeyRequest {
-  /**
-   * @generated from protobuf field: string path = 1;
-   */
-  path: string;
+    /**
+     * @generated from protobuf field: string path = 1;
+     */
+    path: string;
 }
 /**
  * @generated from protobuf message ohw.DerivePublicKeyResponse
  */
 export interface DerivePublicKeyResponse {
-  /**
-   * @generated from protobuf field: string path = 1;
-   */
-  path: string;
-  /**
-   * @generated from protobuf field: bytes public_key = 2;
-   */
-  publicKey: Uint8Array;
+    /**
+     * @generated from protobuf field: string path = 1;
+     */
+    path: string;
+    /**
+     * @generated from protobuf field: bytes public_key = 2;
+     */
+    publicKey: Uint8Array;
 }
 /**
- * @generated from protobuf message ohw.SignRequest
+ * @generated from protobuf message ohw.SignEthRequest
  */
-export interface SignRequest {
-  /**
-   * @generated from protobuf field: int32 id = 1;
-   */
-  id: number;
-  /**
-   * @generated from protobuf field: string path = 2;
-   */
-  path: string;
-  /**
-   * @generated from protobuf field: bytes message = 3;
-   */
-  message: Uint8Array;
-  /**
-   * @generated from protobuf field: bytes pre_hash = 4;
-   */
-  preHash: Uint8Array;
-  /**
-   * @generated from protobuf field: string debug_text = 5;
-   */
-  debugText: string;
+export interface SignEthRequest {
+    /**
+     * @generated from protobuf field: int32 id = 1;
+     */
+    id: number;
+    /**
+     * @generated from protobuf field: string path = 2;
+     */
+    path: string;
+    /**
+     * @generated from protobuf oneof: tx
+     */
+    tx: {
+        oneofKind: "eip2930";
+        /**
+         * @generated from protobuf field: ohw.AppEthTxEip2930 eip2930 = 10;
+         */
+        eip2930: AppEthTxEip2930;
+    } | {
+        oneofKind: "eip191";
+        /**
+         * @generated from protobuf field: ohw.AppEthTxEip191 eip191 = 20;
+         */
+        eip191: AppEthTxEip191;
+    } | {
+        oneofKind: undefined;
+    };
+    /**
+     * @generated from protobuf field: optional string debug_text = 5;
+     */
+    debugText?: string;
+}
+/**
+ * @generated from protobuf message ohw.AppEthTxEip191
+ */
+export interface AppEthTxEip191 {
+    /**
+     * @generated from protobuf field: string message = 1;
+     */
+    message: string;
+    /**
+     * @generated from protobuf field: optional bool is_personal = 2;
+     */
+    isPersonal?: boolean;
+}
+/**
+ * @generated from protobuf message ohw.AppEthTxEip2930
+ */
+export interface AppEthTxEip2930 {
+    /**
+     * @generated from protobuf field: uint64 chain_id = 1;
+     */
+    chainId: bigint;
+    /**
+     * @generated from protobuf field: uint64 nonce = 2;
+     */
+    nonce: bigint;
+    /**
+     * @generated from protobuf field: optional string to = 5;
+     */
+    to?: string;
+    /**
+     * @generated from protobuf field: string gas_price = 3;
+     */
+    gasPrice: string;
+    /**
+     * @generated from protobuf field: uint64 gas_limit = 4;
+     */
+    gasLimit: bigint;
+    /**
+     * @generated from protobuf field: string value = 6;
+     */
+    value: string;
+    /**
+     * @generated from protobuf field: optional bytes input = 7;
+     */
+    input?: Uint8Array;
+    /**
+     * @generated from protobuf field: optional bytes access_list = 8;
+     */
+    accessList?: Uint8Array;
 }
 /**
  * @generated from protobuf message ohw.SignResponse
  */
 export interface SignResponse {
-  /**
-   * @generated from protobuf field: int32 id = 1;
-   */
-  id: number;
-  /**
-   * @generated from protobuf field: bytes message = 2;
-   */
-  message: Uint8Array;
-  /**
-   * @generated from protobuf field: bytes public_key = 3;
-   */
-  publicKey: Uint8Array;
-  /**
-   * @generated from protobuf field: bytes pre_hash = 4;
-   */
-  preHash: Uint8Array;
-  /**
-   * @generated from protobuf field: bytes signature = 5;
-   */
-  signature: Uint8Array;
-  /**
-   * @generated from protobuf field: optional uint32 recovery_id = 6;
-   */
-  recoveryId?: number;
+    /**
+     * @generated from protobuf field: int32 id = 1;
+     */
+    id: number;
+    /**
+     * @generated from protobuf field: bytes message = 2;
+     */
+    message: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes public_key = 3;
+     */
+    publicKey: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes pre_hash = 4;
+     */
+    preHash: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes signature = 5;
+     */
+    signature: Uint8Array;
+    /**
+     * @generated from protobuf field: optional uint32 recovery_id = 6;
+     */
+    recoveryId?: number;
+}
+/**
+ * @generated from protobuf message ohw.ErrorResponse
+ */
+export interface ErrorResponse {
+    /**
+     * @generated from protobuf field: int32 code = 1;
+     */
+    code: number;
+    /**
+     * @generated from protobuf field: string message = 2;
+     */
+    message: string;
+}
+/**
+ * @generated from protobuf message ohw.WaitForUserActionResponse
+ */
+export interface WaitForUserActionResponse {
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class ReqData$Type extends MessageType<ReqData> {
-  constructor() {
-    super("ohw.ReqData", [
-      {
-        no: 2,
-        name: "unknown",
-        kind: "message",
-        oneof: "payload",
-        T: () => Unknown,
-      },
-      {
-        no: 10,
-        name: "version_request",
-        kind: "message",
-        oneof: "payload",
-        T: () => VersionRequest,
-      },
-      {
-        no: 30,
-        name: "init_custom_request",
-        kind: "message",
-        oneof: "payload",
-        T: () => InitWalletCustomRequest,
-      },
-      {
-        no: 40,
-        name: "init_request",
-        kind: "message",
-        oneof: "payload",
-        T: () => InitWalletRequest,
-      },
-      {
-        no: 50,
-        name: "derive_public_key_request",
-        kind: "message",
-        oneof: "payload",
-        T: () => DerivePublicKeyRequest,
-      },
-      {
-        no: 60,
-        name: "sign_request",
-        kind: "message",
-        oneof: "payload",
-        T: () => SignRequest,
-      },
-    ]);
-  }
-  create(value?: PartialMessage<ReqData>): ReqData {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.payload = { oneofKind: undefined };
-    if (value !== undefined)
-      reflectionMergePartial<ReqData>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: ReqData,
-  ): ReqData {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* ohw.Unknown unknown */ 2:
-          message.payload = {
-            oneofKind: "unknown",
-            unknown: Unknown.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).unknown,
-            ),
-          };
-          break;
-        case /* ohw.VersionRequest version_request */ 10:
-          message.payload = {
-            oneofKind: "versionRequest",
-            versionRequest: VersionRequest.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).versionRequest,
-            ),
-          };
-          break;
-        case /* ohw.InitWalletCustomRequest init_custom_request */ 30:
-          message.payload = {
-            oneofKind: "initCustomRequest",
-            initCustomRequest: InitWalletCustomRequest.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).initCustomRequest,
-            ),
-          };
-          break;
-        case /* ohw.InitWalletRequest init_request */ 40:
-          message.payload = {
-            oneofKind: "initRequest",
-            initRequest: InitWalletRequest.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).initRequest,
-            ),
-          };
-          break;
-        case /* ohw.DerivePublicKeyRequest derive_public_key_request */ 50:
-          message.payload = {
-            oneofKind: "derivePublicKeyRequest",
-            derivePublicKeyRequest: DerivePublicKeyRequest.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).derivePublicKeyRequest,
-            ),
-          };
-          break;
-        case /* ohw.SignRequest sign_request */ 60:
-          message.payload = {
-            oneofKind: "signRequest",
-            signRequest: SignRequest.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).signRequest,
-            ),
-          };
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.ReqData", [
+            { no: 2, name: "unknown", kind: "message", oneof: "payload", T: () => Unknown },
+            { no: 10, name: "version_request", kind: "message", oneof: "payload", T: () => VersionRequest },
+            { no: 30, name: "init_custom_request", kind: "message", oneof: "payload", T: () => InitWalletCustomRequest },
+            { no: 40, name: "init_request", kind: "message", oneof: "payload", T: () => InitWalletRequest },
+            { no: 50, name: "derive_public_key_request", kind: "message", oneof: "payload", T: () => DerivePublicKeyRequest },
+            { no: 70, name: "sign_eth_request", kind: "message", oneof: "payload", T: () => SignEthRequest }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: ReqData,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* ohw.Unknown unknown = 2; */
-    if (message.payload.oneofKind === "unknown")
-      Unknown.internalBinaryWrite(
-        message.payload.unknown,
-        writer.tag(2, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.VersionRequest version_request = 10; */
-    if (message.payload.oneofKind === "versionRequest")
-      VersionRequest.internalBinaryWrite(
-        message.payload.versionRequest,
-        writer.tag(10, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.InitWalletCustomRequest init_custom_request = 30; */
-    if (message.payload.oneofKind === "initCustomRequest")
-      InitWalletCustomRequest.internalBinaryWrite(
-        message.payload.initCustomRequest,
-        writer.tag(30, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.InitWalletRequest init_request = 40; */
-    if (message.payload.oneofKind === "initRequest")
-      InitWalletRequest.internalBinaryWrite(
-        message.payload.initRequest,
-        writer.tag(40, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.DerivePublicKeyRequest derive_public_key_request = 50; */
-    if (message.payload.oneofKind === "derivePublicKeyRequest")
-      DerivePublicKeyRequest.internalBinaryWrite(
-        message.payload.derivePublicKeyRequest,
-        writer.tag(50, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.SignRequest sign_request = 60; */
-    if (message.payload.oneofKind === "signRequest")
-      SignRequest.internalBinaryWrite(
-        message.payload.signRequest,
-        writer.tag(60, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<ReqData>): ReqData {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.payload = { oneofKind: undefined };
+        if (value !== undefined)
+            reflectionMergePartial<ReqData>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ReqData): ReqData {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ohw.Unknown unknown */ 2:
+                    message.payload = {
+                        oneofKind: "unknown",
+                        unknown: Unknown.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).unknown)
+                    };
+                    break;
+                case /* ohw.VersionRequest version_request */ 10:
+                    message.payload = {
+                        oneofKind: "versionRequest",
+                        versionRequest: VersionRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).versionRequest)
+                    };
+                    break;
+                case /* ohw.InitWalletCustomRequest init_custom_request */ 30:
+                    message.payload = {
+                        oneofKind: "initCustomRequest",
+                        initCustomRequest: InitWalletCustomRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).initCustomRequest)
+                    };
+                    break;
+                case /* ohw.InitWalletRequest init_request */ 40:
+                    message.payload = {
+                        oneofKind: "initRequest",
+                        initRequest: InitWalletRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).initRequest)
+                    };
+                    break;
+                case /* ohw.DerivePublicKeyRequest derive_public_key_request */ 50:
+                    message.payload = {
+                        oneofKind: "derivePublicKeyRequest",
+                        derivePublicKeyRequest: DerivePublicKeyRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).derivePublicKeyRequest)
+                    };
+                    break;
+                case /* ohw.SignEthRequest sign_eth_request */ 70:
+                    message.payload = {
+                        oneofKind: "signEthRequest",
+                        signEthRequest: SignEthRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).signEthRequest)
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ReqData, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ohw.Unknown unknown = 2; */
+        if (message.payload.oneofKind === "unknown")
+            Unknown.internalBinaryWrite(message.payload.unknown, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.VersionRequest version_request = 10; */
+        if (message.payload.oneofKind === "versionRequest")
+            VersionRequest.internalBinaryWrite(message.payload.versionRequest, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.InitWalletCustomRequest init_custom_request = 30; */
+        if (message.payload.oneofKind === "initCustomRequest")
+            InitWalletCustomRequest.internalBinaryWrite(message.payload.initCustomRequest, writer.tag(30, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.InitWalletRequest init_request = 40; */
+        if (message.payload.oneofKind === "initRequest")
+            InitWalletRequest.internalBinaryWrite(message.payload.initRequest, writer.tag(40, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.DerivePublicKeyRequest derive_public_key_request = 50; */
+        if (message.payload.oneofKind === "derivePublicKeyRequest")
+            DerivePublicKeyRequest.internalBinaryWrite(message.payload.derivePublicKeyRequest, writer.tag(50, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.SignEthRequest sign_eth_request = 70; */
+        if (message.payload.oneofKind === "signEthRequest")
+            SignEthRequest.internalBinaryWrite(message.payload.signEthRequest, writer.tag(70, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.ReqData
@@ -475,186 +442,109 @@ class ReqData$Type extends MessageType<ReqData> {
 export const ReqData = new ReqData$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ResData$Type extends MessageType<ResData> {
-  constructor() {
-    super("ohw.ResData", [
-      {
-        no: 2,
-        name: "unknown",
-        kind: "message",
-        oneof: "payload",
-        T: () => Unknown,
-      },
-      {
-        no: 11,
-        name: "version_response",
-        kind: "message",
-        oneof: "payload",
-        T: () => VersionResponse,
-      },
-      {
-        no: 31,
-        name: "init_wallet_response",
-        kind: "message",
-        oneof: "payload",
-        T: () => InitWalletResponse,
-      },
-      {
-        no: 51,
-        name: "derive_public_key_response",
-        kind: "message",
-        oneof: "payload",
-        T: () => DerivePublicKeyResponse,
-      },
-      {
-        no: 61,
-        name: "sign_response",
-        kind: "message",
-        oneof: "payload",
-        T: () => SignResponse,
-      },
-    ]);
-  }
-  create(value?: PartialMessage<ResData>): ResData {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.payload = { oneofKind: undefined };
-    if (value !== undefined)
-      reflectionMergePartial<ResData>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: ResData,
-  ): ResData {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* ohw.Unknown unknown */ 2:
-          message.payload = {
-            oneofKind: "unknown",
-            unknown: Unknown.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).unknown,
-            ),
-          };
-          break;
-        case /* ohw.VersionResponse version_response */ 11:
-          message.payload = {
-            oneofKind: "versionResponse",
-            versionResponse: VersionResponse.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).versionResponse,
-            ),
-          };
-          break;
-        case /* ohw.InitWalletResponse init_wallet_response */ 31:
-          message.payload = {
-            oneofKind: "initWalletResponse",
-            initWalletResponse: InitWalletResponse.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).initWalletResponse,
-            ),
-          };
-          break;
-        case /* ohw.DerivePublicKeyResponse derive_public_key_response */ 51:
-          message.payload = {
-            oneofKind: "derivePublicKeyResponse",
-            derivePublicKeyResponse: DerivePublicKeyResponse.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).derivePublicKeyResponse,
-            ),
-          };
-          break;
-        case /* ohw.SignResponse sign_response */ 61:
-          message.payload = {
-            oneofKind: "signResponse",
-            signResponse: SignResponse.internalBinaryRead(
-              reader,
-              reader.uint32(),
-              options,
-              (message.payload as any).signResponse,
-            ),
-          };
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.ResData", [
+            { no: 1, name: "error_response", kind: "message", oneof: "payload", T: () => ErrorResponse },
+            { no: 2, name: "unknown", kind: "message", oneof: "payload", T: () => Unknown },
+            { no: 11, name: "version_response", kind: "message", oneof: "payload", T: () => VersionResponse },
+            { no: 31, name: "init_wallet_response", kind: "message", oneof: "payload", T: () => InitWalletResponse },
+            { no: 51, name: "derive_public_key_response", kind: "message", oneof: "payload", T: () => DerivePublicKeyResponse },
+            { no: 61, name: "sign_response", kind: "message", oneof: "payload", T: () => SignResponse },
+            { no: 80, name: "wait_for_user_action_response", kind: "message", oneof: "payload", T: () => WaitForUserActionResponse }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: ResData,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* ohw.Unknown unknown = 2; */
-    if (message.payload.oneofKind === "unknown")
-      Unknown.internalBinaryWrite(
-        message.payload.unknown,
-        writer.tag(2, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.VersionResponse version_response = 11; */
-    if (message.payload.oneofKind === "versionResponse")
-      VersionResponse.internalBinaryWrite(
-        message.payload.versionResponse,
-        writer.tag(11, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.InitWalletResponse init_wallet_response = 31; */
-    if (message.payload.oneofKind === "initWalletResponse")
-      InitWalletResponse.internalBinaryWrite(
-        message.payload.initWalletResponse,
-        writer.tag(31, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.DerivePublicKeyResponse derive_public_key_response = 51; */
-    if (message.payload.oneofKind === "derivePublicKeyResponse")
-      DerivePublicKeyResponse.internalBinaryWrite(
-        message.payload.derivePublicKeyResponse,
-        writer.tag(51, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    /* ohw.SignResponse sign_response = 61; */
-    if (message.payload.oneofKind === "signResponse")
-      SignResponse.internalBinaryWrite(
-        message.payload.signResponse,
-        writer.tag(61, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<ResData>): ResData {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.payload = { oneofKind: undefined };
+        if (value !== undefined)
+            reflectionMergePartial<ResData>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ResData): ResData {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ohw.ErrorResponse error_response */ 1:
+                    message.payload = {
+                        oneofKind: "errorResponse",
+                        errorResponse: ErrorResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).errorResponse)
+                    };
+                    break;
+                case /* ohw.Unknown unknown */ 2:
+                    message.payload = {
+                        oneofKind: "unknown",
+                        unknown: Unknown.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).unknown)
+                    };
+                    break;
+                case /* ohw.VersionResponse version_response */ 11:
+                    message.payload = {
+                        oneofKind: "versionResponse",
+                        versionResponse: VersionResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).versionResponse)
+                    };
+                    break;
+                case /* ohw.InitWalletResponse init_wallet_response */ 31:
+                    message.payload = {
+                        oneofKind: "initWalletResponse",
+                        initWalletResponse: InitWalletResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).initWalletResponse)
+                    };
+                    break;
+                case /* ohw.DerivePublicKeyResponse derive_public_key_response */ 51:
+                    message.payload = {
+                        oneofKind: "derivePublicKeyResponse",
+                        derivePublicKeyResponse: DerivePublicKeyResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).derivePublicKeyResponse)
+                    };
+                    break;
+                case /* ohw.SignResponse sign_response */ 61:
+                    message.payload = {
+                        oneofKind: "signResponse",
+                        signResponse: SignResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).signResponse)
+                    };
+                    break;
+                case /* ohw.WaitForUserActionResponse wait_for_user_action_response */ 80:
+                    message.payload = {
+                        oneofKind: "waitForUserActionResponse",
+                        waitForUserActionResponse: WaitForUserActionResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).waitForUserActionResponse)
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ResData, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ohw.ErrorResponse error_response = 1; */
+        if (message.payload.oneofKind === "errorResponse")
+            ErrorResponse.internalBinaryWrite(message.payload.errorResponse, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.Unknown unknown = 2; */
+        if (message.payload.oneofKind === "unknown")
+            Unknown.internalBinaryWrite(message.payload.unknown, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.VersionResponse version_response = 11; */
+        if (message.payload.oneofKind === "versionResponse")
+            VersionResponse.internalBinaryWrite(message.payload.versionResponse, writer.tag(11, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.InitWalletResponse init_wallet_response = 31; */
+        if (message.payload.oneofKind === "initWalletResponse")
+            InitWalletResponse.internalBinaryWrite(message.payload.initWalletResponse, writer.tag(31, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.DerivePublicKeyResponse derive_public_key_response = 51; */
+        if (message.payload.oneofKind === "derivePublicKeyResponse")
+            DerivePublicKeyResponse.internalBinaryWrite(message.payload.derivePublicKeyResponse, writer.tag(51, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.SignResponse sign_response = 61; */
+        if (message.payload.oneofKind === "signResponse")
+            SignResponse.internalBinaryWrite(message.payload.signResponse, writer.tag(61, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.WaitForUserActionResponse wait_for_user_action_response = 80; */
+        if (message.payload.oneofKind === "waitForUserActionResponse")
+            WaitForUserActionResponse.internalBinaryWrite(message.payload.waitForUserActionResponse, writer.tag(80, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.ResData
@@ -662,37 +552,24 @@ class ResData$Type extends MessageType<ResData> {
 export const ResData = new ResData$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Unknown$Type extends MessageType<Unknown> {
-  constructor() {
-    super("ohw.Unknown", []);
-  }
-  create(value?: PartialMessage<Unknown>): Unknown {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    if (value !== undefined)
-      reflectionMergePartial<Unknown>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: Unknown,
-  ): Unknown {
-    return target ?? this.create();
-  }
-  internalBinaryWrite(
-    message: Unknown,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    constructor() {
+        super("ohw.Unknown", []);
+    }
+    create(value?: PartialMessage<Unknown>): Unknown {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<Unknown>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Unknown): Unknown {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: Unknown, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.Unknown
@@ -700,37 +577,24 @@ class Unknown$Type extends MessageType<Unknown> {
 export const Unknown = new Unknown$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class VersionRequest$Type extends MessageType<VersionRequest> {
-  constructor() {
-    super("ohw.VersionRequest", []);
-  }
-  create(value?: PartialMessage<VersionRequest>): VersionRequest {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    if (value !== undefined)
-      reflectionMergePartial<VersionRequest>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: VersionRequest,
-  ): VersionRequest {
-    return target ?? this.create();
-  }
-  internalBinaryWrite(
-    message: VersionRequest,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    constructor() {
+        super("ohw.VersionRequest", []);
+    }
+    create(value?: PartialMessage<VersionRequest>): VersionRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<VersionRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VersionRequest): VersionRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: VersionRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.VersionRequest
@@ -738,84 +602,53 @@ class VersionRequest$Type extends MessageType<VersionRequest> {
 export const VersionRequest = new VersionRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class VersionResponse$Type extends MessageType<VersionResponse> {
-  constructor() {
-    super("ohw.VersionResponse", [
-      { no: 1, name: "version", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-      { no: 2, name: "features", kind: "message", T: () => Features },
-    ]);
-  }
-  create(value?: PartialMessage<VersionResponse>): VersionResponse {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.version = "";
-    if (value !== undefined)
-      reflectionMergePartial<VersionResponse>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: VersionResponse,
-  ): VersionResponse {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* string version */ 1:
-          message.version = reader.string();
-          break;
-        case /* ohw.Features features */ 2:
-          message.features = Features.internalBinaryRead(
-            reader,
-            reader.uint32(),
-            options,
-            message.features,
-          );
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.VersionResponse", [
+            { no: 1, name: "version", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "features", kind: "message", T: () => Features }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: VersionResponse,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* string version = 1; */
-    if (message.version !== "")
-      writer.tag(1, WireType.LengthDelimited).string(message.version);
-    /* ohw.Features features = 2; */
-    if (message.features)
-      Features.internalBinaryWrite(
-        message.features,
-        writer.tag(2, WireType.LengthDelimited).fork(),
-        options,
-      ).join();
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<VersionResponse>): VersionResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.version = "";
+        if (value !== undefined)
+            reflectionMergePartial<VersionResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VersionResponse): VersionResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string version */ 1:
+                    message.version = reader.string();
+                    break;
+                case /* ohw.Features features */ 2:
+                    message.features = Features.internalBinaryRead(reader, reader.uint32(), options, message.features);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: VersionResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string version = 1; */
+        if (message.version !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.version);
+        /* ohw.Features features = 2; */
+        if (message.features)
+            Features.internalBinaryWrite(message.features, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.VersionResponse
@@ -823,81 +656,54 @@ class VersionResponse$Type extends MessageType<VersionResponse> {
 export const VersionResponse = new VersionResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Features$Type extends MessageType<Features> {
-  constructor() {
-    super("ohw.Features", [
-      { no: 10, name: "initialized", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-      {
-        no: 20,
-        name: "has_hardware_random",
-        kind: "scalar",
-        T: 8 /*ScalarType.BOOL*/,
-      },
-    ]);
-  }
-  create(value?: PartialMessage<Features>): Features {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.initialized = false;
-    message.hasHardwareRandom = false;
-    if (value !== undefined)
-      reflectionMergePartial<Features>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: Features,
-  ): Features {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* bool initialized */ 10:
-          message.initialized = reader.bool();
-          break;
-        case /* bool has_hardware_random */ 20:
-          message.hasHardwareRandom = reader.bool();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.Features", [
+            { no: 10, name: "initialized", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 20, name: "support_mask", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: Features,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* bool initialized = 10; */
-    if (message.initialized !== false)
-      writer.tag(10, WireType.Varint).bool(message.initialized);
-    /* bool has_hardware_random = 20; */
-    if (message.hasHardwareRandom !== false)
-      writer.tag(20, WireType.Varint).bool(message.hasHardwareRandom);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<Features>): Features {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.initialized = false;
+        message.supportMask = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial<Features>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Features): Features {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool initialized */ 10:
+                    message.initialized = reader.bool();
+                    break;
+                case /* bytes support_mask */ 20:
+                    message.supportMask = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Features, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool initialized = 10; */
+        if (message.initialized !== false)
+            writer.tag(10, WireType.Varint).bool(message.initialized);
+        /* bytes support_mask = 20; */
+        if (message.supportMask.length)
+            writer.tag(20, WireType.LengthDelimited).bytes(message.supportMask);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.Features
@@ -905,78 +711,54 @@ class Features$Type extends MessageType<Features> {
 export const Features = new Features$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class InitWalletCustomRequest$Type extends MessageType<InitWalletCustomRequest> {
-  constructor() {
-    super("ohw.InitWalletCustomRequest", [
-      { no: 2, name: "words", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-      { no: 3, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-    ]);
-  }
-  create(
-    value?: PartialMessage<InitWalletCustomRequest>,
-  ): InitWalletCustomRequest {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.words = "";
-    message.password = "";
-    if (value !== undefined)
-      reflectionMergePartial<InitWalletCustomRequest>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: InitWalletCustomRequest,
-  ): InitWalletCustomRequest {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* string words */ 2:
-          message.words = reader.string();
-          break;
-        case /* string password */ 3:
-          message.password = reader.string();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.InitWalletCustomRequest", [
+            { no: 2, name: "words", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: InitWalletCustomRequest,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* string words = 2; */
-    if (message.words !== "")
-      writer.tag(2, WireType.LengthDelimited).string(message.words);
-    /* string password = 3; */
-    if (message.password !== "")
-      writer.tag(3, WireType.LengthDelimited).string(message.password);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<InitWalletCustomRequest>): InitWalletCustomRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.words = "";
+        message.password = "";
+        if (value !== undefined)
+            reflectionMergePartial<InitWalletCustomRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InitWalletCustomRequest): InitWalletCustomRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string words */ 2:
+                    message.words = reader.string();
+                    break;
+                case /* string password */ 3:
+                    message.password = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: InitWalletCustomRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string words = 2; */
+        if (message.words !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.words);
+        /* string password = 3; */
+        if (message.password !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.password);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.InitWalletCustomRequest
@@ -984,89 +766,61 @@ class InitWalletCustomRequest$Type extends MessageType<InitWalletCustomRequest> 
 export const InitWalletCustomRequest = new InitWalletCustomRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class InitWalletRequest$Type extends MessageType<InitWalletRequest> {
-  constructor() {
-    super("ohw.InitWalletRequest", [
-      { no: 1, name: "length", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
-      { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-      {
-        no: 3,
-        name: "seed",
-        kind: "scalar",
-        opt: true,
-        T: 12 /*ScalarType.BYTES*/,
-      },
-    ]);
-  }
-  create(value?: PartialMessage<InitWalletRequest>): InitWalletRequest {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.length = 0;
-    message.password = "";
-    if (value !== undefined)
-      reflectionMergePartial<InitWalletRequest>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: InitWalletRequest,
-  ): InitWalletRequest {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* uint32 length */ 1:
-          message.length = reader.uint32();
-          break;
-        case /* string password */ 2:
-          message.password = reader.string();
-          break;
-        case /* optional bytes seed */ 3:
-          message.seed = reader.bytes();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.InitWalletRequest", [
+            { no: 1, name: "length", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
+            { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "seed", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: InitWalletRequest,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* uint32 length = 1; */
-    if (message.length !== 0)
-      writer.tag(1, WireType.Varint).uint32(message.length);
-    /* string password = 2; */
-    if (message.password !== "")
-      writer.tag(2, WireType.LengthDelimited).string(message.password);
-    /* optional bytes seed = 3; */
-    if (message.seed !== undefined)
-      writer.tag(3, WireType.LengthDelimited).bytes(message.seed);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<InitWalletRequest>): InitWalletRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.length = 0;
+        message.password = "";
+        if (value !== undefined)
+            reflectionMergePartial<InitWalletRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InitWalletRequest): InitWalletRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* uint32 length */ 1:
+                    message.length = reader.uint32();
+                    break;
+                case /* string password */ 2:
+                    message.password = reader.string();
+                    break;
+                case /* optional bytes seed */ 3:
+                    message.seed = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: InitWalletRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* uint32 length = 1; */
+        if (message.length !== 0)
+            writer.tag(1, WireType.Varint).uint32(message.length);
+        /* string password = 2; */
+        if (message.password !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.password);
+        /* optional bytes seed = 3; */
+        if (message.seed !== undefined)
+            writer.tag(3, WireType.LengthDelimited).bytes(message.seed);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.InitWalletRequest
@@ -1074,73 +828,45 @@ class InitWalletRequest$Type extends MessageType<InitWalletRequest> {
 export const InitWalletRequest = new InitWalletRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class InitWalletResponse$Type extends MessageType<InitWalletResponse> {
-  constructor() {
-    super("ohw.InitWalletResponse", [
-      {
-        no: 1,
-        name: "mnemonic",
-        kind: "scalar",
-        opt: true,
-        T: 9 /*ScalarType.STRING*/,
-      },
-    ]);
-  }
-  create(value?: PartialMessage<InitWalletResponse>): InitWalletResponse {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    if (value !== undefined)
-      reflectionMergePartial<InitWalletResponse>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: InitWalletResponse,
-  ): InitWalletResponse {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* optional string mnemonic */ 1:
-          message.mnemonic = reader.string();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.InitWalletResponse", [
+            { no: 1, name: "mnemonic", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: InitWalletResponse,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* optional string mnemonic = 1; */
-    if (message.mnemonic !== undefined)
-      writer.tag(1, WireType.LengthDelimited).string(message.mnemonic);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<InitWalletResponse>): InitWalletResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<InitWalletResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InitWalletResponse): InitWalletResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* optional string mnemonic */ 1:
+                    message.mnemonic = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: InitWalletResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* optional string mnemonic = 1; */
+        if (message.mnemonic !== undefined)
+            writer.tag(1, WireType.LengthDelimited).string(message.mnemonic);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.InitWalletResponse
@@ -1148,70 +874,46 @@ class InitWalletResponse$Type extends MessageType<InitWalletResponse> {
 export const InitWalletResponse = new InitWalletResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class DerivePublicKeyRequest$Type extends MessageType<DerivePublicKeyRequest> {
-  constructor() {
-    super("ohw.DerivePublicKeyRequest", [
-      { no: 1, name: "path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-    ]);
-  }
-  create(
-    value?: PartialMessage<DerivePublicKeyRequest>,
-  ): DerivePublicKeyRequest {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.path = "";
-    if (value !== undefined)
-      reflectionMergePartial<DerivePublicKeyRequest>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: DerivePublicKeyRequest,
-  ): DerivePublicKeyRequest {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* string path */ 1:
-          message.path = reader.string();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.DerivePublicKeyRequest", [
+            { no: 1, name: "path", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: DerivePublicKeyRequest,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* string path = 1; */
-    if (message.path !== "")
-      writer.tag(1, WireType.LengthDelimited).string(message.path);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<DerivePublicKeyRequest>): DerivePublicKeyRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.path = "";
+        if (value !== undefined)
+            reflectionMergePartial<DerivePublicKeyRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DerivePublicKeyRequest): DerivePublicKeyRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string path */ 1:
+                    message.path = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DerivePublicKeyRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string path = 1; */
+        if (message.path !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.path);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.DerivePublicKeyRequest
@@ -1219,293 +921,459 @@ class DerivePublicKeyRequest$Type extends MessageType<DerivePublicKeyRequest> {
 export const DerivePublicKeyRequest = new DerivePublicKeyRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class DerivePublicKeyResponse$Type extends MessageType<DerivePublicKeyResponse> {
-  constructor() {
-    super("ohw.DerivePublicKeyResponse", [
-      { no: 1, name: "path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-      { no: 2, name: "public_key", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-    ]);
-  }
-  create(
-    value?: PartialMessage<DerivePublicKeyResponse>,
-  ): DerivePublicKeyResponse {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.path = "";
-    message.publicKey = new Uint8Array(0);
-    if (value !== undefined)
-      reflectionMergePartial<DerivePublicKeyResponse>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: DerivePublicKeyResponse,
-  ): DerivePublicKeyResponse {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* string path */ 1:
-          message.path = reader.string();
-          break;
-        case /* bytes public_key */ 2:
-          message.publicKey = reader.bytes();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.DerivePublicKeyResponse", [
+            { no: 1, name: "path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "public_key", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: DerivePublicKeyResponse,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* string path = 1; */
-    if (message.path !== "")
-      writer.tag(1, WireType.LengthDelimited).string(message.path);
-    /* bytes public_key = 2; */
-    if (message.publicKey.length)
-      writer.tag(2, WireType.LengthDelimited).bytes(message.publicKey);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<DerivePublicKeyResponse>): DerivePublicKeyResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.path = "";
+        message.publicKey = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial<DerivePublicKeyResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DerivePublicKeyResponse): DerivePublicKeyResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string path */ 1:
+                    message.path = reader.string();
+                    break;
+                case /* bytes public_key */ 2:
+                    message.publicKey = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DerivePublicKeyResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string path = 1; */
+        if (message.path !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.path);
+        /* bytes public_key = 2; */
+        if (message.publicKey.length)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.publicKey);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.DerivePublicKeyResponse
  */
 export const DerivePublicKeyResponse = new DerivePublicKeyResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class SignRequest$Type extends MessageType<SignRequest> {
-  constructor() {
-    super("ohw.SignRequest", [
-      { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-      { no: 2, name: "path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-      { no: 3, name: "message", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-      { no: 4, name: "pre_hash", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-      { no: 5, name: "debug_text", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-    ]);
-  }
-  create(value?: PartialMessage<SignRequest>): SignRequest {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.id = 0;
-    message.path = "";
-    message.message = new Uint8Array(0);
-    message.preHash = new Uint8Array(0);
-    message.debugText = "";
-    if (value !== undefined)
-      reflectionMergePartial<SignRequest>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: SignRequest,
-  ): SignRequest {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* int32 id */ 1:
-          message.id = reader.int32();
-          break;
-        case /* string path */ 2:
-          message.path = reader.string();
-          break;
-        case /* bytes message */ 3:
-          message.message = reader.bytes();
-          break;
-        case /* bytes pre_hash */ 4:
-          message.preHash = reader.bytes();
-          break;
-        case /* string debug_text */ 5:
-          message.debugText = reader.string();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+class SignEthRequest$Type extends MessageType<SignEthRequest> {
+    constructor() {
+        super("ohw.SignEthRequest", [
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "eip2930", kind: "message", oneof: "tx", T: () => AppEthTxEip2930 },
+            { no: 20, name: "eip191", kind: "message", oneof: "tx", T: () => AppEthTxEip191 },
+            { no: 5, name: "debug_text", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: SignRequest,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* int32 id = 1; */
-    if (message.id !== 0) writer.tag(1, WireType.Varint).int32(message.id);
-    /* string path = 2; */
-    if (message.path !== "")
-      writer.tag(2, WireType.LengthDelimited).string(message.path);
-    /* bytes message = 3; */
-    if (message.message.length)
-      writer.tag(3, WireType.LengthDelimited).bytes(message.message);
-    /* bytes pre_hash = 4; */
-    if (message.preHash.length)
-      writer.tag(4, WireType.LengthDelimited).bytes(message.preHash);
-    /* string debug_text = 5; */
-    if (message.debugText !== "")
-      writer.tag(5, WireType.LengthDelimited).string(message.debugText);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<SignEthRequest>): SignEthRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = 0;
+        message.path = "";
+        message.tx = { oneofKind: undefined };
+        if (value !== undefined)
+            reflectionMergePartial<SignEthRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SignEthRequest): SignEthRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
+                    break;
+                case /* string path */ 2:
+                    message.path = reader.string();
+                    break;
+                case /* ohw.AppEthTxEip2930 eip2930 */ 10:
+                    message.tx = {
+                        oneofKind: "eip2930",
+                        eip2930: AppEthTxEip2930.internalBinaryRead(reader, reader.uint32(), options, (message.tx as any).eip2930)
+                    };
+                    break;
+                case /* ohw.AppEthTxEip191 eip191 */ 20:
+                    message.tx = {
+                        oneofKind: "eip191",
+                        eip191: AppEthTxEip191.internalBinaryRead(reader, reader.uint32(), options, (message.tx as any).eip191)
+                    };
+                    break;
+                case /* optional string debug_text */ 5:
+                    message.debugText = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SignEthRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        /* string path = 2; */
+        if (message.path !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.path);
+        /* ohw.AppEthTxEip2930 eip2930 = 10; */
+        if (message.tx.oneofKind === "eip2930")
+            AppEthTxEip2930.internalBinaryWrite(message.tx.eip2930, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.AppEthTxEip191 eip191 = 20; */
+        if (message.tx.oneofKind === "eip191")
+            AppEthTxEip191.internalBinaryWrite(message.tx.eip191, writer.tag(20, WireType.LengthDelimited).fork(), options).join();
+        /* optional string debug_text = 5; */
+        if (message.debugText !== undefined)
+            writer.tag(5, WireType.LengthDelimited).string(message.debugText);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
- * @generated MessageType for protobuf message ohw.SignRequest
+ * @generated MessageType for protobuf message ohw.SignEthRequest
  */
-export const SignRequest = new SignRequest$Type();
+export const SignEthRequest = new SignEthRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class AppEthTxEip191$Type extends MessageType<AppEthTxEip191> {
+    constructor() {
+        super("ohw.AppEthTxEip191", [
+            { no: 1, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "is_personal", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<AppEthTxEip191>): AppEthTxEip191 {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<AppEthTxEip191>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AppEthTxEip191): AppEthTxEip191 {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string message */ 1:
+                    message.message = reader.string();
+                    break;
+                case /* optional bool is_personal */ 2:
+                    message.isPersonal = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: AppEthTxEip191, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string message = 1; */
+        if (message.message !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.message);
+        /* optional bool is_personal = 2; */
+        if (message.isPersonal !== undefined)
+            writer.tag(2, WireType.Varint).bool(message.isPersonal);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ohw.AppEthTxEip191
+ */
+export const AppEthTxEip191 = new AppEthTxEip191$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class AppEthTxEip2930$Type extends MessageType<AppEthTxEip2930> {
+    constructor() {
+        super("ohw.AppEthTxEip2930", [
+            { no: 1, name: "chain_id", kind: "scalar", T: 4 /*ScalarType.UINT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "nonce", kind: "scalar", T: 4 /*ScalarType.UINT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 5, name: "to", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "gas_price", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "gas_limit", kind: "scalar", T: 4 /*ScalarType.UINT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 6, name: "value", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "input", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ },
+            { no: 8, name: "access_list", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ }
+        ]);
+    }
+    create(value?: PartialMessage<AppEthTxEip2930>): AppEthTxEip2930 {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.chainId = 0n;
+        message.nonce = 0n;
+        message.gasPrice = "";
+        message.gasLimit = 0n;
+        message.value = "";
+        if (value !== undefined)
+            reflectionMergePartial<AppEthTxEip2930>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AppEthTxEip2930): AppEthTxEip2930 {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* uint64 chain_id */ 1:
+                    message.chainId = reader.uint64().toBigInt();
+                    break;
+                case /* uint64 nonce */ 2:
+                    message.nonce = reader.uint64().toBigInt();
+                    break;
+                case /* optional string to */ 5:
+                    message.to = reader.string();
+                    break;
+                case /* string gas_price */ 3:
+                    message.gasPrice = reader.string();
+                    break;
+                case /* uint64 gas_limit */ 4:
+                    message.gasLimit = reader.uint64().toBigInt();
+                    break;
+                case /* string value */ 6:
+                    message.value = reader.string();
+                    break;
+                case /* optional bytes input */ 7:
+                    message.input = reader.bytes();
+                    break;
+                case /* optional bytes access_list */ 8:
+                    message.accessList = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: AppEthTxEip2930, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* uint64 chain_id = 1; */
+        if (message.chainId !== 0n)
+            writer.tag(1, WireType.Varint).uint64(message.chainId);
+        /* uint64 nonce = 2; */
+        if (message.nonce !== 0n)
+            writer.tag(2, WireType.Varint).uint64(message.nonce);
+        /* optional string to = 5; */
+        if (message.to !== undefined)
+            writer.tag(5, WireType.LengthDelimited).string(message.to);
+        /* string gas_price = 3; */
+        if (message.gasPrice !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.gasPrice);
+        /* uint64 gas_limit = 4; */
+        if (message.gasLimit !== 0n)
+            writer.tag(4, WireType.Varint).uint64(message.gasLimit);
+        /* string value = 6; */
+        if (message.value !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.value);
+        /* optional bytes input = 7; */
+        if (message.input !== undefined)
+            writer.tag(7, WireType.LengthDelimited).bytes(message.input);
+        /* optional bytes access_list = 8; */
+        if (message.accessList !== undefined)
+            writer.tag(8, WireType.LengthDelimited).bytes(message.accessList);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ohw.AppEthTxEip2930
+ */
+export const AppEthTxEip2930 = new AppEthTxEip2930$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class SignResponse$Type extends MessageType<SignResponse> {
-  constructor() {
-    super("ohw.SignResponse", [
-      { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-      { no: 2, name: "message", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-      { no: 3, name: "public_key", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-      { no: 4, name: "pre_hash", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-      { no: 5, name: "signature", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
-      {
-        no: 6,
-        name: "recovery_id",
-        kind: "scalar",
-        opt: true,
-        T: 13 /*ScalarType.UINT32*/,
-      },
-    ]);
-  }
-  create(value?: PartialMessage<SignResponse>): SignResponse {
-    const message = globalThis.Object.create(this.messagePrototype!);
-    message.id = 0;
-    message.message = new Uint8Array(0);
-    message.publicKey = new Uint8Array(0);
-    message.preHash = new Uint8Array(0);
-    message.signature = new Uint8Array(0);
-    if (value !== undefined)
-      reflectionMergePartial<SignResponse>(this, message, value);
-    return message;
-  }
-  internalBinaryRead(
-    reader: IBinaryReader,
-    length: number,
-    options: BinaryReadOptions,
-    target?: SignResponse,
-  ): SignResponse {
-    let message = target ?? this.create(),
-      end = reader.pos + length;
-    while (reader.pos < end) {
-      let [fieldNo, wireType] = reader.tag();
-      switch (fieldNo) {
-        case /* int32 id */ 1:
-          message.id = reader.int32();
-          break;
-        case /* bytes message */ 2:
-          message.message = reader.bytes();
-          break;
-        case /* bytes public_key */ 3:
-          message.publicKey = reader.bytes();
-          break;
-        case /* bytes pre_hash */ 4:
-          message.preHash = reader.bytes();
-          break;
-        case /* bytes signature */ 5:
-          message.signature = reader.bytes();
-          break;
-        case /* optional uint32 recovery_id */ 6:
-          message.recoveryId = reader.uint32();
-          break;
-        default:
-          let u = options.readUnknownField;
-          if (u === "throw")
-            throw new globalThis.Error(
-              `Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`,
-            );
-          let d = reader.skip(wireType);
-          if (u !== false)
-            (u === true ? UnknownFieldHandler.onRead : u)(
-              this.typeName,
-              message,
-              fieldNo,
-              wireType,
-              d,
-            );
-      }
+    constructor() {
+        super("ohw.SignResponse", [
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "message", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 3, name: "public_key", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 4, name: "pre_hash", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 5, name: "signature", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 6, name: "recovery_id", kind: "scalar", opt: true, T: 13 /*ScalarType.UINT32*/ }
+        ]);
     }
-    return message;
-  }
-  internalBinaryWrite(
-    message: SignResponse,
-    writer: IBinaryWriter,
-    options: BinaryWriteOptions,
-  ): IBinaryWriter {
-    /* int32 id = 1; */
-    if (message.id !== 0) writer.tag(1, WireType.Varint).int32(message.id);
-    /* bytes message = 2; */
-    if (message.message.length)
-      writer.tag(2, WireType.LengthDelimited).bytes(message.message);
-    /* bytes public_key = 3; */
-    if (message.publicKey.length)
-      writer.tag(3, WireType.LengthDelimited).bytes(message.publicKey);
-    /* bytes pre_hash = 4; */
-    if (message.preHash.length)
-      writer.tag(4, WireType.LengthDelimited).bytes(message.preHash);
-    /* bytes signature = 5; */
-    if (message.signature.length)
-      writer.tag(5, WireType.LengthDelimited).bytes(message.signature);
-    /* optional uint32 recovery_id = 6; */
-    if (message.recoveryId !== undefined)
-      writer.tag(6, WireType.Varint).uint32(message.recoveryId);
-    let u = options.writeUnknownFields;
-    if (u !== false)
-      (u == true ? UnknownFieldHandler.onWrite : u)(
-        this.typeName,
-        message,
-        writer,
-      );
-    return writer;
-  }
+    create(value?: PartialMessage<SignResponse>): SignResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = 0;
+        message.message = new Uint8Array(0);
+        message.publicKey = new Uint8Array(0);
+        message.preHash = new Uint8Array(0);
+        message.signature = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial<SignResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SignResponse): SignResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
+                    break;
+                case /* bytes message */ 2:
+                    message.message = reader.bytes();
+                    break;
+                case /* bytes public_key */ 3:
+                    message.publicKey = reader.bytes();
+                    break;
+                case /* bytes pre_hash */ 4:
+                    message.preHash = reader.bytes();
+                    break;
+                case /* bytes signature */ 5:
+                    message.signature = reader.bytes();
+                    break;
+                case /* optional uint32 recovery_id */ 6:
+                    message.recoveryId = reader.uint32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SignResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        /* bytes message = 2; */
+        if (message.message.length)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.message);
+        /* bytes public_key = 3; */
+        if (message.publicKey.length)
+            writer.tag(3, WireType.LengthDelimited).bytes(message.publicKey);
+        /* bytes pre_hash = 4; */
+        if (message.preHash.length)
+            writer.tag(4, WireType.LengthDelimited).bytes(message.preHash);
+        /* bytes signature = 5; */
+        if (message.signature.length)
+            writer.tag(5, WireType.LengthDelimited).bytes(message.signature);
+        /* optional uint32 recovery_id = 6; */
+        if (message.recoveryId !== undefined)
+            writer.tag(6, WireType.Varint).uint32(message.recoveryId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
 }
 /**
  * @generated MessageType for protobuf message ohw.SignResponse
  */
 export const SignResponse = new SignResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ErrorResponse$Type extends MessageType<ErrorResponse> {
+    constructor() {
+        super("ohw.ErrorResponse", [
+            { no: 1, name: "code", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ErrorResponse>): ErrorResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.code = 0;
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<ErrorResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ErrorResponse): ErrorResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 code */ 1:
+                    message.code = reader.int32();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ErrorResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 code = 1; */
+        if (message.code !== 0)
+            writer.tag(1, WireType.Varint).int32(message.code);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ohw.ErrorResponse
+ */
+export const ErrorResponse = new ErrorResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class WaitForUserActionResponse$Type extends MessageType<WaitForUserActionResponse> {
+    constructor() {
+        super("ohw.WaitForUserActionResponse", []);
+    }
+    create(value?: PartialMessage<WaitForUserActionResponse>): WaitForUserActionResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<WaitForUserActionResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: WaitForUserActionResponse): WaitForUserActionResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: WaitForUserActionResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ohw.WaitForUserActionResponse
+ */
+export const WaitForUserActionResponse = new WaitForUserActionResponse$Type();

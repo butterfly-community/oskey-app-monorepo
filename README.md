@@ -1,6 +1,6 @@
 # Open Hardware Wallet Frontend Interface
 
-The Open Hardware Wallet frontend application provides a web interface for interacting with OHW hardware devices. This application allows users to initialize devices, manage cryptocurrency addresses, and sign transactions directly through their browser.
+The Open Hardware Wallet frontend application provides a web interface for interacting with OSKey hardware devices. This application allows users to initialize devices, manage cryptocurrency addresses, and sign transactions directly through their browser.
 
 ## Features
 
@@ -16,13 +16,13 @@ The Open Hardware Wallet frontend application provides a web interface for inter
 
 - Modern web browser with Seria support (Chrome 89+, Edge 89+)
 - Node.js 20+
-- OHW compatible hardware device
+- OSKey compatible hardware device
 
 ### Installation
 
 ```bash
 git clone https://github.com/butterfly-community/oskey-app-monorepo
-cd ohw-app-monorepo
+cd oskey-app-monorepo
 pnpm install
 pnpm run dev
 ```

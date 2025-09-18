@@ -5,12 +5,13 @@ import {
   InitWalletCustomRequest,
   InitWalletRequest,
   ReqData,
-  SignRequest,
+  SignEthRequest,
   VersionRequest,
 } from "~/protocols/protobuf/ohw";
 import { ethers } from "ethers";
 import "web-serial-polyfill";
 import { serial } from "web-serial-polyfill";
+import { isVersionCompatible, getVersionUpgradeMessage } from "~/utils/version";
 
 import { Core } from "@walletconnect/core";
 import { WalletKit, type WalletKitTypes } from "@reown/walletkit";
@@ -62,6 +63,19 @@ export function TestPage() {
   const [initialized, setInitialized] = useState(false);
   const [ohw, setOHW] = useState(false);
   const [version, SetVersion] = useState("");
+
+  //  * The buffer content represents:
+  //  * - buffer[0]: Secure Boot
+  //  * - buffer[1]: Flash Encryption
+  //  * - buffer[2]: Bootloader
+  //  * - buffer[3]: Storage Init
+  //  * - buffer[4]: Hardware Rng support
+  //  * - buffer[5]: Display & Input support
+  //  * - buffer[6]: User Key support
+  //  *
+  const [supportFeature, setSupportFeature] = useState<Uint8Array>(
+    new Uint8Array(16),
+  );
   const [path, setPath] = useAtom(pathAtom);
 
   const [walletConnect, setWalletConnect] = useState(false);
@@ -73,15 +87,30 @@ export function TestPage() {
   const { confirm, Dialog } = useConfirm();
 
   useEffect(() => {
-    updateActiveSessions();
+    updateActiveSessions().catch(console.error);
   }, [walletConnect]);
 
-  const updateActiveSessions = () => {
+  const updateActiveSessions = async () => {
     try {
       const sessions = walletKit.getActiveSessions();
-      setActiveSessions(Object.values(sessions) as SessionTypes.Struct[]);
+      const validSessions = [];
+
+      for (const session of Object.values(sessions)) {
+        try {
+          if (session && session.peer && session.topic) {
+            validSessions.push(session as SessionTypes.Struct);
+          }
+        } catch (error) {
+          console.warn(`Session ${session?.topic} appears invalid:`, error);
+        }
+      }
+      setActiveSessions(validSessions);
+      console.log(
+        `Refreshed sessions: ${validSessions.length} active sessions found`,
+      );
     } catch (error) {
-      console.error("get active session fail:", error);
+      console.error("Failed to refresh active sessions:", error);
+      setActiveSessions([]);
     }
   };
 
@@ -94,12 +123,12 @@ export function TestPage() {
     } catch (error) {
       console.error("disconnect fail:", error);
     } finally {
-      updateActiveSessions();
+      updateActiveSessions().catch(console.error);
     }
   };
 
   useEffect(() => {
-    // wallectConnectDisconnect();
+    updateActiveSessions().catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -108,9 +137,32 @@ export function TestPage() {
       switch (data.payload.oneofKind) {
         case "versionResponse": {
           const version = data.payload.versionResponse;
+          
+          const MINIMUM_VERSION = "0.2.0";
+          
+          if (!isVersionCompatible(version.version, MINIMUM_VERSION)) {
+            const upgradeMessage = getVersionUpgradeMessage(version.version, MINIMUM_VERSION);
+            
+            confirm(
+              upgradeMessage
+            ).then((shouldGoToUpgrade) => {
+              if (shouldGoToUpgrade) {
+                window.open("https://github.com/butterfly-community/oskey-firmware/releases", "_blank");
+              }
+            });
+            serialManager.close();
+            setOHW(false);
+            setInitialized(false);
+            return;
+          }
+          
           setOHW(true);
           SetVersion(version.version);
           setInitialized(version.features?.initialized ?? false);
+          const mask = version.features?.supportMask ?? new Uint8Array(16);
+          console.log("supportMask received:", mask);
+          console.log("supportMask values:", Array.from(mask));
+          setSupportFeature(mask);
 
           if (version.features?.initialized) {
             setMnemonic(
@@ -179,15 +231,38 @@ export function TestPage() {
 
   const initWalletKitEvent = async () => {
     console.log("walletconnect", "init");
-    walletKit?.on("session_proposal", onSessionProposal);
 
+    walletKit?.off("session_proposal", onSessionProposal);
+    walletKit?.off("session_request", onSessionRequest);
+
+    store.set(signatureAtom, "");
+    store.set(messageAtom, "");
+    store.set(debugText, "");
+
+    walletKit?.on("session_proposal", onSessionProposal);
     walletKit?.on("session_request", onSessionRequest);
   };
 
+  const cleanupInvalidSessions = async () => {
+    try {
+      console.log("Refreshing WalletConnect sessions...");
+      await updateActiveSessions();
+      const sessions = walletKit.getActiveSessions();
+      if (Object.keys(sessions).length === 0) {
+        console.log("No sessions found, clearing local state");
+        setActiveSessions([]);
+      }
+      console.log("Session refresh completed");
+    } catch (error) {
+      console.error("Error refreshing sessions:", error);
+      setActiveSessions([]);
+    }
+  };
+
   async function onSessionRequest(event: WalletKitTypes.SessionRequest) {
+    const { topic, params, id } = event;
     try {
       console.log("event", event);
-      const { topic, params, id } = event;
       if (params.request.method == "personal_sign") {
         const requestParamsMessage = params.request.params[0];
         const data = ethers.toUtf8String(requestParamsMessage);
@@ -196,6 +271,12 @@ export function TestPage() {
 
         // alert(message);
         if (!(await confirm(message))) {
+          const response = {
+            id,
+            error: getSdkError("USER_REJECTED"),
+            jsonrpc: "2.0",
+          };
+          await walletKit.respondSessionRequest({ topic, response });
           return;
         }
 
@@ -205,16 +286,27 @@ export function TestPage() {
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        signMessage();
+        signEthEip191();
 
         let mark = 0;
 
         while (true) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          if (store.get(signatureAtom) != "" || mark > 60) {
+          if (store.get(signatureAtom) != "" || mark > 120) {
             break;
           }
           mark = mark + 1;
+        }
+
+        if (store.get(signatureAtom) == "") {
+          alert("Sign Timeout");
+          const response = {
+            id,
+            error: getSdkError("USER_REJECTED"),
+            jsonrpc: "2.0",
+          };
+          await walletKit.respondSessionRequest({ topic, response });
+          return;
         }
 
         const response = {
@@ -232,6 +324,12 @@ export function TestPage() {
 
         if (from.toLowerCase() != store.get(addressAtom).toLowerCase()) {
           alert("Address not this use path! please check!");
+          const response = {
+            id,
+            error: getSdkError("UNAUTHORIZED_METHOD"),
+            jsonrpc: "2.0",
+          };
+          await walletKit.respondSessionRequest({ topic, response });
           return;
         }
 
@@ -287,6 +385,12 @@ export function TestPage() {
 
         // alert(message);
         if (!(await confirm(message))) {
+          const response = {
+            id,
+            error: getSdkError("USER_REJECTED"),
+            jsonrpc: "2.0",
+          };
+          await walletKit.respondSessionRequest({ topic, response });
           return;
         }
 
@@ -298,16 +402,27 @@ export function TestPage() {
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        signMessage();
+        signEthEip2930(tx);
 
         let mark = 0;
 
         while (true) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          if (store.get(signatureAtom) != "" || mark > 60) {
+          if (store.get(signatureAtom) != "" || mark > 120) {
             break;
           }
           mark = mark + 1;
+        }
+
+        if (store.get(signatureAtom) == "") {
+          alert("Sign Timeout");
+          const response = {
+            id,
+            error: getSdkError("USER_REJECTED"),
+            jsonrpc: "2.0",
+          };
+          await walletKit.respondSessionRequest({ topic, response });
+          return;
         }
 
         const sig = Transaction.from({
@@ -336,6 +451,16 @@ export function TestPage() {
       }
     } catch (err) {
       console.log(err);
+      try {
+        const response = {
+          id,
+          error: getSdkError("USER_REJECTED"),
+          jsonrpc: "2.0",
+        };
+        await walletKit.respondSessionRequest({ topic, response });
+      } catch (responseErr) {
+        console.error("Failed to send error response:", responseErr);
+      }
     }
   }
 
@@ -383,8 +508,11 @@ export function TestPage() {
         params.proposer.metadata.url +
         "\n";
 
-      // alert(message);
       if (!(await confirm(message))) {
+        await walletKit?.rejectSession({
+          id: id,
+          reason: getSdkError("USER_REJECTED"),
+        });
         return;
       }
 
@@ -393,7 +521,7 @@ export function TestPage() {
         namespaces: approvedNamespaces,
       });
 
-      updateActiveSessions();
+      await updateActiveSessions();
     } catch (err) {
       console.log("err", err);
       await walletKit?.rejectSession({
@@ -484,23 +612,47 @@ export function TestPage() {
     await serialManager.sendProtobuf(initRequest);
   };
 
-  const signMessage = async () => {
+  const signEthEip191 = async () => {
     const message = store.get(messageAtom);
     console.log("message", message);
 
-    const bytes = message.startsWith("0x")
-      ? ethers.getBytesCopy(message)
-      : ethers.getBytesCopy(ethers.hashMessage(message));
-
     const signRequest = ReqData.create({
       payload: {
-        oneofKind: "signRequest",
-        signRequest: SignRequest.create({
+        oneofKind: "signEthRequest",
+        signEthRequest: SignEthRequest.create({
           id: 0,
-          preHash: bytes,
           path: store.get(pathAtom),
-          message: bytes,
-          debugText: store.get(debugText),
+          tx: {
+            oneofKind: "eip191",
+            eip191: {
+              message: message,
+            },
+          },
+        }),
+      },
+    });
+    await serialManager.sendProtobuf(signRequest);
+  };
+
+  const signEthEip2930 = async (tx: Transaction) => {
+    const signRequest = ReqData.create({
+      payload: {
+        oneofKind: "signEthRequest",
+        signEthRequest: SignEthRequest.create({
+          id: 0,
+          path: store.get(pathAtom),
+          tx: {
+            oneofKind: "eip2930",
+            eip2930: {
+              chainId: tx.chainId ?? 1,
+              nonce: BigInt(tx.nonce) ?? 0,
+              to: tx.to ?? "",
+              value: ethers.toBeHex(tx.value),
+              gasLimit: BigInt(tx.gasLimit) ?? 21000n,
+              gasPrice: ethers.toBigInt(tx.gasPrice ?? 0n).toString(),
+              input: ethers.getBytes(tx.data),
+            },
+          },
         }),
       },
     });
@@ -519,7 +671,7 @@ export function TestPage() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
         <div className="mb-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">OHW Test Page</h1>
+          <h1 className="text-3xl font-bold text-gray-900">OSKey Hardware Wallet</h1>
           <div className="flex gap-4">
             <button
               onClick={() =>
@@ -565,33 +717,44 @@ export function TestPage() {
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-amber-900">
-                Development Environment Notice
+                Security Precautions
               </h2>
             </div>
 
             <div className="space-y-4">
               <div className="bg-white bg-opacity-50 rounded-lg p-5 border border-amber-200">
                 <h3 className="text-lg font-semibold text-amber-800 mb-3">
-                  Security Precautions
+                  Please check the device status
                 </h3>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
                     <span className="text-amber-700">
-                      Do not use real assets or import production mnemonics in
-                      this environment
+                      Without hardware RNG, mnemonic generation is not secure enough
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
                     <span className="text-amber-700">
-                      All data may be cleared during the development phase
+                      Without screen/buttons, signatures cannot be manually verified on device
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                    <span className="text-amber-700">
+                      Without secure boot and flash encryption, firmware and storage are not secure
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                    <span className="text-amber-700">
+                      Without storage support, data will be lost after power off
                     </span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-white bg-opacity-50 rounded-lg p-5 border border-amber-200">
+              {/* <div className="bg-white bg-opacity-50 rounded-lg p-5 border border-amber-200">
                 <h3 className="text-lg font-semibold text-amber-800 mb-3">
                   Development Board Status
                 </h3>
@@ -611,7 +774,7 @@ export function TestPage() {
                     </span>
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
 
             <div className="mt-6 text-center">
@@ -646,7 +809,7 @@ export function TestPage() {
             <h2 className="text-xl font-semibold mb-4">Device Status</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">OHW Status:</span>
+                <span className="text-gray-600">OSKey Status:</span>
                 <div>
                   {ohw ? (
                     <span className="text-green-600">
@@ -657,6 +820,46 @@ export function TestPage() {
                   )}
                 </div>
               </div>
+              
+              {ohw && (
+                <div className="mt-4">
+                  <span className="text-gray-600 text-sm font-medium">Support Features:</span>
+                  <div className="mt-2 space-y-2">
+                    {[
+                      { name: "Secure Boot", index: 0 },
+                      { name: "Flash Encryption", index: 1 },
+                      { name: "Bootloader", index: 2 },
+                      { name: "Storage Init", index: 3 },
+                      { name: "Hardware Rng", index: 4 },
+                      { name: "Display & Input", index: 5 },
+                      { name: "User Key", index: 6 },
+                    ].map(({ name, index }) => (
+                      <div key={name} className="flex items-center justify-between text-xs">
+                        <span className="text-gray-600">{name}:</span>
+                        <div className="flex items-center gap-2">
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              supportFeature[index] === 1 
+                                ? "bg-green-500" 
+                                : "bg-red-500"
+                            }`}
+                          />
+                          <span
+                            className={`font-medium ${
+                              supportFeature[index] === 1 
+                                ? "text-green-600" 
+                                : "text-red-600"
+                            }`}
+                          >
+                            {supportFeature[index] === 1 ? "Supported" : "Not Supported"}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
               {!ohw && connected && (
                 <div className="text-red-600 text-sm">
                   Missing ohw firmware. Please{" "}
@@ -777,7 +980,7 @@ export function TestPage() {
               </div>
               {initialized && (
                 <button
-                  onClick={signMessage}
+                  onClick={signEthEip191}
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Sign Message
@@ -827,7 +1030,15 @@ export function TestPage() {
             <div>
               <h3 className="text-lg font-medium mb-2">Active Sessions</h3>
               {activeSessions.length === 0 ? (
-                <div className="text-gray-500">No active sessions</div>
+                <div className="space-y-4">
+                  <div className="text-gray-500">No active sessions</div>
+                  <button
+                    onClick={cleanupInvalidSessions}
+                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Refresh Sessions
+                  </button>
+                </div>
               ) : (
                 <div className="space-y-4">
                   {activeSessions.map((session) => (
@@ -857,18 +1068,16 @@ export function TestPage() {
                       </div>
                     </div>
                   ))}
-                  {activeSessions.length > 1 && (
-                    <button
-                      onClick={async () => {
-                        for (const session of activeSessions) {
-                          await handleDisconnect(session.topic);
-                        }
-                      }}
-                      className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                    >
-                      Disconnect All
-                    </button>
-                  )}
+                  <button
+                    onClick={async () => {
+                      for (const session of activeSessions) {
+                        await handleDisconnect(session.topic);
+                      }
+                    }}
+                    className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Disconnect All
+                  </button>
                 </div>
               )}
             </div>
