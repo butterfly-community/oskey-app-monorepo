@@ -53,9 +53,12 @@ export class SerialManager {
     if (!navigator.serial) {
       throw new Error("Not Support WebSerial API");
     }
-    if (!this.port?.connected) {
-      this.port = await navigator.serial.requestPort();
-    }
+    
+    // Always disconnect previous connection before connecting
+    await this.close();
+    
+    // Always request user to select port
+    this.port = await navigator.serial.requestPort();
 
     await this.port.open(this.config.PORT);
 
@@ -110,7 +113,7 @@ export class SerialManager {
 
       if (!magicMatch) {
         this.buffer = this.buffer.slice(1);
-        break;
+        continue;
       }
 
       const length = (this.buffer[3] << 8) | this.buffer[4];

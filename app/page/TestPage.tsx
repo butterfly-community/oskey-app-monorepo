@@ -138,7 +138,7 @@ export function TestPage() {
         case "versionResponse": {
           const version = data.payload.versionResponse;
           
-          const MINIMUM_VERSION = "0.2.0";
+          const MINIMUM_VERSION = "0.2.3";
           
           if (!isVersionCompatible(version.version, MINIMUM_VERSION)) {
             const upgradeMessage = getVersionUpgradeMessage(version.version, MINIMUM_VERSION);
@@ -450,7 +450,7 @@ export function TestPage() {
         await walletKit.respondSessionRequest({ topic, response });
       }
     } catch (err) {
-      console.log(err);
+      alert(err);
       try {
         const response = {
           id,
