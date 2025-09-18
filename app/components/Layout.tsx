@@ -12,17 +12,17 @@ export function Header() {
             OSKey
           </Link>
           <div className="flex items-center space-x-6">
+             <Link
+              to="/settings"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+            >
+              Settings
+            </Link>
             <Link
               to="/blog"
               className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
             >
               Blog
-            </Link>
-            <Link
-              to="/test"
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-            >
-              Test
             </Link>
             <Link
               to="https://github.com/butterfly-community/oskey-firmware/tree/master/doc/start"
