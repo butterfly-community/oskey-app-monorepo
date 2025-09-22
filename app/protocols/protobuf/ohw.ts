@@ -31,6 +31,18 @@ export interface ReqData {
          */
         versionRequest: VersionRequest;
     } | {
+        oneofKind: "statusRequest";
+        /**
+         * @generated from protobuf field: ohw.StatusRequest status_request = 20;
+         */
+        statusRequest: StatusRequest;
+    } | {
+        oneofKind: "unlockRequest";
+        /**
+         * @generated from protobuf field: ohw.UnlockRequest unlock_request = 25;
+         */
+        unlockRequest: UnlockRequest;
+    } | {
         oneofKind: "initCustomRequest";
         /**
          * @generated from protobuf field: ohw.InitWalletCustomRequest init_custom_request = 30;
@@ -83,6 +95,12 @@ export interface ResData {
          * @generated from protobuf field: ohw.VersionResponse version_response = 11;
          */
         versionResponse: VersionResponse;
+    } | {
+        oneofKind: "statusResponse";
+        /**
+         * @generated from protobuf field: ohw.StatusResponse status_response = 21;
+         */
+        statusResponse: StatusResponse;
     } | {
         oneofKind: "initWalletResponse";
         /**
@@ -148,6 +166,29 @@ export interface Features {
     supportMask: Uint8Array;
 }
 /**
+ * @generated from protobuf message ohw.StatusRequest
+ */
+export interface StatusRequest {
+}
+/**
+ * @generated from protobuf message ohw.StatusResponse
+ */
+export interface StatusResponse {
+    /**
+     * @generated from protobuf field: bytes status_mask = 1;
+     */
+    statusMask: Uint8Array;
+}
+/**
+ * @generated from protobuf message ohw.UnlockRequest
+ */
+export interface UnlockRequest {
+    /**
+     * @generated from protobuf field: bytes hash = 1;
+     */
+    hash: Uint8Array;
+}
+/**
  * @generated from protobuf message ohw.InitWalletCustomRequest
  */
 export interface InitWalletCustomRequest {
@@ -159,6 +200,10 @@ export interface InitWalletCustomRequest {
      * @generated from protobuf field: string password = 3;
      */
     password: string;
+    /**
+     * @generated from protobuf field: bytes pin = 4;
+     */
+    pin: Uint8Array;
 }
 /**
  * @generated from protobuf message ohw.InitWalletRequest
@@ -176,6 +221,10 @@ export interface InitWalletRequest {
      * @generated from protobuf field: optional bytes seed = 3;
      */
     seed?: Uint8Array;
+    /**
+     * @generated from protobuf field: bytes pin = 4;
+     */
+    pin: Uint8Array;
 }
 /**
  * @generated from protobuf message ohw.InitWalletResponse
@@ -346,6 +395,8 @@ class ReqData$Type extends MessageType<ReqData> {
         super("ohw.ReqData", [
             { no: 2, name: "unknown", kind: "message", oneof: "payload", T: () => Unknown },
             { no: 10, name: "version_request", kind: "message", oneof: "payload", T: () => VersionRequest },
+            { no: 20, name: "status_request", kind: "message", oneof: "payload", T: () => StatusRequest },
+            { no: 25, name: "unlock_request", kind: "message", oneof: "payload", T: () => UnlockRequest },
             { no: 30, name: "init_custom_request", kind: "message", oneof: "payload", T: () => InitWalletCustomRequest },
             { no: 40, name: "init_request", kind: "message", oneof: "payload", T: () => InitWalletRequest },
             { no: 50, name: "derive_public_key_request", kind: "message", oneof: "payload", T: () => DerivePublicKeyRequest },
@@ -374,6 +425,18 @@ class ReqData$Type extends MessageType<ReqData> {
                     message.payload = {
                         oneofKind: "versionRequest",
                         versionRequest: VersionRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).versionRequest)
+                    };
+                    break;
+                case /* ohw.StatusRequest status_request */ 20:
+                    message.payload = {
+                        oneofKind: "statusRequest",
+                        statusRequest: StatusRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).statusRequest)
+                    };
+                    break;
+                case /* ohw.UnlockRequest unlock_request */ 25:
+                    message.payload = {
+                        oneofKind: "unlockRequest",
+                        unlockRequest: UnlockRequest.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).unlockRequest)
                     };
                     break;
                 case /* ohw.InitWalletCustomRequest init_custom_request */ 30:
@@ -418,6 +481,12 @@ class ReqData$Type extends MessageType<ReqData> {
         /* ohw.VersionRequest version_request = 10; */
         if (message.payload.oneofKind === "versionRequest")
             VersionRequest.internalBinaryWrite(message.payload.versionRequest, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.StatusRequest status_request = 20; */
+        if (message.payload.oneofKind === "statusRequest")
+            StatusRequest.internalBinaryWrite(message.payload.statusRequest, writer.tag(20, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.UnlockRequest unlock_request = 25; */
+        if (message.payload.oneofKind === "unlockRequest")
+            UnlockRequest.internalBinaryWrite(message.payload.unlockRequest, writer.tag(25, WireType.LengthDelimited).fork(), options).join();
         /* ohw.InitWalletCustomRequest init_custom_request = 30; */
         if (message.payload.oneofKind === "initCustomRequest")
             InitWalletCustomRequest.internalBinaryWrite(message.payload.initCustomRequest, writer.tag(30, WireType.LengthDelimited).fork(), options).join();
@@ -447,6 +516,7 @@ class ResData$Type extends MessageType<ResData> {
             { no: 1, name: "error_response", kind: "message", oneof: "payload", T: () => ErrorResponse },
             { no: 2, name: "unknown", kind: "message", oneof: "payload", T: () => Unknown },
             { no: 11, name: "version_response", kind: "message", oneof: "payload", T: () => VersionResponse },
+            { no: 21, name: "status_response", kind: "message", oneof: "payload", T: () => StatusResponse },
             { no: 31, name: "init_wallet_response", kind: "message", oneof: "payload", T: () => InitWalletResponse },
             { no: 51, name: "derive_public_key_response", kind: "message", oneof: "payload", T: () => DerivePublicKeyResponse },
             { no: 61, name: "sign_response", kind: "message", oneof: "payload", T: () => SignResponse },
@@ -481,6 +551,12 @@ class ResData$Type extends MessageType<ResData> {
                     message.payload = {
                         oneofKind: "versionResponse",
                         versionResponse: VersionResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).versionResponse)
+                    };
+                    break;
+                case /* ohw.StatusResponse status_response */ 21:
+                    message.payload = {
+                        oneofKind: "statusResponse",
+                        statusResponse: StatusResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).statusResponse)
                     };
                     break;
                 case /* ohw.InitWalletResponse init_wallet_response */ 31:
@@ -528,6 +604,9 @@ class ResData$Type extends MessageType<ResData> {
         /* ohw.VersionResponse version_response = 11; */
         if (message.payload.oneofKind === "versionResponse")
             VersionResponse.internalBinaryWrite(message.payload.versionResponse, writer.tag(11, WireType.LengthDelimited).fork(), options).join();
+        /* ohw.StatusResponse status_response = 21; */
+        if (message.payload.oneofKind === "statusResponse")
+            StatusResponse.internalBinaryWrite(message.payload.statusResponse, writer.tag(21, WireType.LengthDelimited).fork(), options).join();
         /* ohw.InitWalletResponse init_wallet_response = 31; */
         if (message.payload.oneofKind === "initWalletResponse")
             InitWalletResponse.internalBinaryWrite(message.payload.initWalletResponse, writer.tag(31, WireType.LengthDelimited).fork(), options).join();
@@ -710,17 +789,138 @@ class Features$Type extends MessageType<Features> {
  */
 export const Features = new Features$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class StatusRequest$Type extends MessageType<StatusRequest> {
+    constructor() {
+        super("ohw.StatusRequest", []);
+    }
+    create(value?: PartialMessage<StatusRequest>): StatusRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<StatusRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StatusRequest): StatusRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: StatusRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ohw.StatusRequest
+ */
+export const StatusRequest = new StatusRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StatusResponse$Type extends MessageType<StatusResponse> {
+    constructor() {
+        super("ohw.StatusResponse", [
+            { no: 1, name: "status_mask", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StatusResponse>): StatusResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.statusMask = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial<StatusResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StatusResponse): StatusResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes status_mask */ 1:
+                    message.statusMask = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StatusResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bytes status_mask = 1; */
+        if (message.statusMask.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.statusMask);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ohw.StatusResponse
+ */
+export const StatusResponse = new StatusResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UnlockRequest$Type extends MessageType<UnlockRequest> {
+    constructor() {
+        super("ohw.UnlockRequest", [
+            { no: 1, name: "hash", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+        ]);
+    }
+    create(value?: PartialMessage<UnlockRequest>): UnlockRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.hash = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial<UnlockRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UnlockRequest): UnlockRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes hash */ 1:
+                    message.hash = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UnlockRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bytes hash = 1; */
+        if (message.hash.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.hash);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ohw.UnlockRequest
+ */
+export const UnlockRequest = new UnlockRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class InitWalletCustomRequest$Type extends MessageType<InitWalletCustomRequest> {
     constructor() {
         super("ohw.InitWalletCustomRequest", [
             { no: 2, name: "words", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "pin", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
         ]);
     }
     create(value?: PartialMessage<InitWalletCustomRequest>): InitWalletCustomRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.words = "";
         message.password = "";
+        message.pin = new Uint8Array(0);
         if (value !== undefined)
             reflectionMergePartial<InitWalletCustomRequest>(this, message, value);
         return message;
@@ -735,6 +935,9 @@ class InitWalletCustomRequest$Type extends MessageType<InitWalletCustomRequest> 
                     break;
                 case /* string password */ 3:
                     message.password = reader.string();
+                    break;
+                case /* bytes pin */ 4:
+                    message.pin = reader.bytes();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -754,6 +957,9 @@ class InitWalletCustomRequest$Type extends MessageType<InitWalletCustomRequest> 
         /* string password = 3; */
         if (message.password !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.password);
+        /* bytes pin = 4; */
+        if (message.pin.length)
+            writer.tag(4, WireType.LengthDelimited).bytes(message.pin);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -770,13 +976,15 @@ class InitWalletRequest$Type extends MessageType<InitWalletRequest> {
         super("ohw.InitWalletRequest", [
             { no: 1, name: "length", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
             { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "seed", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ }
+            { no: 3, name: "seed", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ },
+            { no: 4, name: "pin", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
         ]);
     }
     create(value?: PartialMessage<InitWalletRequest>): InitWalletRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.length = 0;
         message.password = "";
+        message.pin = new Uint8Array(0);
         if (value !== undefined)
             reflectionMergePartial<InitWalletRequest>(this, message, value);
         return message;
@@ -794,6 +1002,9 @@ class InitWalletRequest$Type extends MessageType<InitWalletRequest> {
                     break;
                 case /* optional bytes seed */ 3:
                     message.seed = reader.bytes();
+                    break;
+                case /* bytes pin */ 4:
+                    message.pin = reader.bytes();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -816,6 +1027,9 @@ class InitWalletRequest$Type extends MessageType<InitWalletRequest> {
         /* optional bytes seed = 3; */
         if (message.seed !== undefined)
             writer.tag(3, WireType.LengthDelimited).bytes(message.seed);
+        /* bytes pin = 4; */
+        if (message.pin.length)
+            writer.tag(4, WireType.LengthDelimited).bytes(message.pin);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

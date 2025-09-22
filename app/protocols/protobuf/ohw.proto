@@ -8,6 +8,8 @@ message ReqData
 	{
 		Unknown unknown = 2;
 		VersionRequest version_request = 10;
+		StatusRequest status_request = 20;
+		UnlockRequest unlock_request = 25;
 		InitWalletCustomRequest init_custom_request = 30;
 		InitWalletRequest init_request = 40;
 		DerivePublicKeyRequest derive_public_key_request = 50;
@@ -22,6 +24,7 @@ message ResData
 		ErrorResponse error_response = 1;
 		Unknown unknown = 2;
 		VersionResponse version_response = 11;
+		StatusResponse status_response = 21;
 		InitWalletResponse init_wallet_response = 31;
 		DerivePublicKeyResponse derive_public_key_response = 51;
 		SignResponse sign_response = 61;
@@ -49,10 +52,25 @@ message Features
 	bytes support_mask = 20;
 }
 
+message StatusRequest
+{
+}
+
+message StatusResponse
+{
+	bytes status_mask = 1;
+}
+
+message UnlockRequest
+{
+	bytes hash = 1;
+}
+
 message InitWalletCustomRequest
 {
 	string words = 2;
 	string password = 3;
+	bytes pin = 4;
 }
 
 message InitWalletRequest
@@ -60,6 +78,7 @@ message InitWalletRequest
 	uint32 length = 1;
 	string password = 2;
 	optional bytes seed = 3;
+	bytes pin = 4;
 }
 
 message InitWalletResponse

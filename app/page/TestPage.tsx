@@ -8,6 +8,7 @@ import {
   SignEthRequest,
   VersionRequest,
 } from "~/protocols/protobuf/ohw";
+import { PasswordInput } from "~/components/PasswordInput";
 import { ethers } from "ethers";
 import "web-serial-polyfill";
 import { serial } from "web-serial-polyfill";
@@ -40,11 +41,13 @@ const walletKit = await WalletKit.init({
 const store = getDefaultStore();
 
 export const connectedAtom = atom<boolean>(false);
+export const initializedAtom = atom<boolean>(false);
 export const signatureAtom = atom<string>("");
 export const messageAtom = atom<string>("");
 export const addressAtom = atom<string>("");
 export const pathAtom = atom<string>("m/44'/60'/0'/0/0");
 export const debugText = atom<string>("");
+export const supportFeatureAtom = atom<Uint8Array>(new Uint8Array(16));
 
 export function TestPage() {
   const [serialManager] = useState(() => new SerialManager());
@@ -57,10 +60,71 @@ export function TestPage() {
 
   const [mnemonic, setMnemonic] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [confirmError, setConfirmError] = useState("");
+  const [mnemonicErrors, setMnemonicErrors] = useState<string[]>([]);
   const [address, setAddress] = useAtom(addressAtom);
 
+  // Password validation and handling
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    
+    // Clear previous errors
+    setPasswordErrors([]);
+    setConfirmError("");
+    
+    // Validate password strength
+    if (value) {
+      const validation = validatePinStrength(value);
+      if (!validation.isValid) {
+        setPasswordErrors(validation.errors);
+      }
+    }
+    
+    // Reset confirm password if main password changes
+    setConfirmPassword("");
+  };
+
+  const handleConfirmPasswordChange = (value: string) => {
+    setConfirmPassword(value);
+    
+    // Clear confirm error when user starts typing
+    if (confirmError) {
+      setConfirmError("");
+    }
+    
+    // Check if passwords match
+    if (value && password !== value) {
+      setConfirmError("PINs do not match");
+    } else if (value && password === value) {
+      setConfirmError("");
+    }
+  };
+
+  // Mnemonic validation and handling
+  const handleMnemonicChange = (value: string) => {
+    setMnemonic(value);
+    
+    // Clear previous errors
+    setMnemonicErrors([]);
+    
+    // Validate mnemonic if not empty
+    if (value.trim()) {
+      const validation = validateMnemonic(value);
+      if (!validation.isValid) {
+        setMnemonicErrors(validation.errors);
+      }
+    }
+  };
+
+  const isPasswordValid = password && validatePinStrength(password).isValid;
+  const doPasswordsMatch = password && confirmPassword && password === confirmPassword;
+  const isWalletPinReady = isPasswordValid && doPasswordsMatch;
+  const isMnemonicValid = mnemonic.trim() && validateMnemonic(mnemonic).isValid;
+
   const [walletKitUri, setWalletKitUri] = useState("");
-  const [initialized, setInitialized] = useState(false);
+  const [initialized, setInitialized] = useAtom(initializedAtom);
   const [ohw, setOHW] = useState(false);
   const [version, SetVersion] = useState("");
 
@@ -73,9 +137,15 @@ export function TestPage() {
   //  * - buffer[5]: Display & Input support
   //  * - buffer[6]: User Key support
   //  *
-  const [supportFeature, setSupportFeature] = useState<Uint8Array>(
-    new Uint8Array(16),
-  );
+  const [supportFeature, setSupportFeature] = useAtom(supportFeatureAtom);
+
+  //  * The buffer content represents:
+  //  * - buffer[0]: Storage Init
+  //  * - buffer[1]: Lock status
+  // const [hardwareStatus, setHardwareStatus] = useState<Uint8Array>(
+  //   new Uint8Array(16),
+  // );
+
   const [path, setPath] = useAtom(pathAtom);
 
   const [walletConnect, setWalletConnect] = useState(false);
@@ -85,6 +155,7 @@ export function TestPage() {
   );
 
   const { confirm, Dialog } = useConfirm();
+  const { requestPin, PinDialog } = usePinInput();
 
   useEffect(() => {
     updateActiveSessions().catch(console.error);
@@ -137,17 +208,21 @@ export function TestPage() {
       switch (data.payload.oneofKind) {
         case "versionResponse": {
           const version = data.payload.versionResponse;
-          
-          const MINIMUM_VERSION = "0.3.0";
-          
+
+          const MINIMUM_VERSION = "0.4.0";
+
           if (!isVersionCompatible(version.version, MINIMUM_VERSION)) {
-            const upgradeMessage = getVersionUpgradeMessage(version.version, MINIMUM_VERSION);
-            
-            confirm(
-              upgradeMessage
-            ).then((shouldGoToUpgrade) => {
+            const upgradeMessage = getVersionUpgradeMessage(
+              version.version,
+              MINIMUM_VERSION,
+            );
+
+            confirm(upgradeMessage).then((shouldGoToUpgrade) => {
               if (shouldGoToUpgrade) {
-                window.open("https://github.com/butterfly-community/oskey-firmware/releases", "_blank");
+                window.open(
+                  "https://github.com/butterfly-community/oskey-firmware/releases",
+                  "_blank",
+                );
               }
             });
             serialManager.close();
@@ -155,19 +230,51 @@ export function TestPage() {
             setInitialized(false);
             return;
           }
-          
+
           setOHW(true);
           SetVersion(version.version);
           setInitialized(version.features?.initialized ?? false);
+          store.set(initializedAtom, version.features?.initialized ?? false);
           const mask = version.features?.supportMask ?? new Uint8Array(16);
           console.log("supportMask received:", mask);
           console.log("supportMask values:", Array.from(mask));
           setSupportFeature(mask);
+          store.set(supportFeatureAtom, mask);
 
           if (version.features?.initialized) {
             setMnemonic(
               "Initialization has been completed. Scroll down to use more functions.",
             );
+            getStatus();
+          }
+          break;
+        }
+        case "statusResponse": {
+          const statusMask = data.payload.statusResponse.statusMask;
+          // setHardwareStatus(statusMask);
+
+          const feature = store.get(supportFeatureAtom);
+
+          const isLocked = statusMask[1] === 1;
+
+          if (store.get(initializedAtom) && isLocked) {
+  
+            const hasDisplayAndInput = feature[5] === 1;
+            
+            if (hasDisplayAndInput) {
+              requestPin(true).then((shouldCheck) => {
+                if (shouldCheck) {
+                  checkUnlockStatus();
+                }
+              });
+            } else {
+              requestPin(false).then((result) => {
+                if (typeof result === 'string') {
+                  sendUnlock(result);
+                }
+              });
+            }
+          } else if (store.get(initializedAtom) && !isLocked) {
             derivePublicKey();
             initWalletKitEvent();
           }
@@ -267,10 +374,8 @@ export function TestPage() {
         const requestParamsMessage = params.request.params[0];
         const data = ethers.toUtf8String(requestParamsMessage);
 
-        // 格式化长消息，添加适当的换行
         const formatMessage = (msg: string) => {
           if (msg.length > 80) {
-            // 每80个字符添加一个换行，或在空格处换行
             return msg.replace(/(.{80})/g, "$1\n").replace(/\n /g, "\n");
           }
           return msg;
@@ -279,7 +384,6 @@ export function TestPage() {
         const formattedData = formatMessage(data);
         const message = "Do you agree sign message?" + "\n\n" + formattedData;
 
-        // alert(message);
         if (!(await confirm(message))) {
           const response = {
             id,
@@ -368,7 +472,7 @@ export function TestPage() {
         }
 
         if (!newData.gasPrice) {
-            const feeData = await provider.getFeeData();
+          const feeData = await provider.getFeeData();
           newData.gasPrice = feeData.gasPrice ?? feeData.maxFeePerGas;
         }
 
@@ -378,12 +482,10 @@ export function TestPage() {
           return Object.entries(obj)
             .map(([key, value]) => {
               if (key === "data" || key === "to") {
-                // 对于长地址或数据，添加换行以提高可读性
                 const strValue = String(value);
                 if (strValue.length > 60) {
-                  // 每60个字符换行
                   const chunks = strValue.match(/.{1,60}/g) || [strValue];
-                  return `${key}:\n${chunks.join('\n')}\n`;
+                  return `${key}:\n${chunks.join("\n")}\n`;
                 }
                 return `${key}:\n${value}\n`;
               }
@@ -446,16 +548,9 @@ export function TestPage() {
           signature: store.get(signatureAtom),
         });
 
-        // const provider = new ethers.JsonRpcProvider(
-        //   "https://sepolia.infura.io/v3/" + import.meta.env.VITE_INFURA_ID,
-        // );
         const txResponse = await provider.broadcastTransaction(sig.serialized);
 
         console.log(txResponse);
-
-        // const receipt = await txResponse.wait();
-
-        // console.log(receipt);
 
         const response = {
           id,
@@ -584,12 +679,25 @@ export function TestPage() {
   };
 
   const initWallet = async () => {
+    // Validate wallet PIN
+    const pinValidation = validatePinStrength(password);
+    if (!pinValidation.isValid) {
+      alert("Invalid PIN: " + pinValidation.errors.join(", "));
+      return;
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      alert("PINs do not match. Please confirm your PIN.");
+      return;
+    }
+
     const initRequest = ReqData.create({
       payload: {
         oneofKind: "initRequest",
         initRequest: InitWalletRequest.create({
           length: 24,
-          password: password,
+          pin: hashPassword(password),
         }),
       },
     });
@@ -598,16 +706,32 @@ export function TestPage() {
   };
 
   const initWalletCustom = async () => {
-    if (!mnemonic) {
-      alert("Please enter both mnemonic and password");
+    // Validate mnemonic
+    const mnemonicValidation = validateMnemonic(mnemonic);
+    if (!mnemonicValidation.isValid) {
+      alert("Invalid mnemonic: " + mnemonicValidation.errors.join(", "));
       return;
     }
+
+    // Validate wallet PIN
+    const pinValidation = validatePinStrength(password);
+    if (!pinValidation.isValid) {
+      alert("Invalid PIN: " + pinValidation.errors.join(", "));
+      return;
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      alert("PINs do not match. Please confirm your PIN.");
+      return;
+    }
+
     const initRequest = ReqData.create({
       payload: {
         oneofKind: "initCustomRequest",
         initCustomRequest: InitWalletCustomRequest.create({
           words: mnemonic,
-          password: password,
+          pin: hashPassword(password),
         }),
       },
     });
@@ -626,6 +750,40 @@ export function TestPage() {
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await serialManager.sendProtobuf(initRequest);
+  };
+
+  const getStatus = async () => {
+    const statusRequest = ReqData.create({
+      payload: {
+        oneofKind: "statusRequest",
+        statusRequest: {},
+      },
+    });
+    await serialManager.sendProtobuf(statusRequest);
+  };
+
+  const hashPassword = (password: string) => {
+    const salt = "&%OSKey1$!@";
+    const pw = password + salt;
+    const hash = ethers.sha256(ethers.toUtf8Bytes(pw));
+    return ethers.getBytes(hash);
+  };
+
+  const sendUnlock = async (password: string) => {
+
+    const unlockRequest = ReqData.create({
+      payload: {
+        oneofKind: "unlockRequest",
+        unlockRequest: {
+          hash: hashPassword(password),
+        },
+      },
+    });
+    await serialManager.sendProtobuf(unlockRequest);
+  };
+
+  const checkUnlockStatus = async () => {
+    await getStatus();
   };
 
   const signEthEip191 = async () => {
@@ -683,11 +841,14 @@ export function TestPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       {Dialog}
+      {PinDialog}
 
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
         <div className="mb-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">OSKey Hardware Wallet</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            OSKey Hardware Wallet
+          </h1>
           <div className="flex gap-4">
             <button
               onClick={() =>
@@ -746,19 +907,21 @@ export function TestPage() {
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
                     <span className="text-amber-700">
-                      Without hardware RNG, mnemonic generation is not secure enough
+                      Without hardware RNG, mnemonic generation is not secure
+                      enough
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
                     <span className="text-amber-700">
-                      Without screen/buttons, signatures cannot be manually verified on device
+                      Without screen/buttons, signatures cannot be manually
+                      verified on device
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
                     <span className="text-amber-700">
-                      Without secure boot and flash encryption, firmware and storage are not secure
+                      Without secure boot, firmware can be replaced
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
@@ -769,28 +932,6 @@ export function TestPage() {
                   </li>
                 </ul>
               </div>
-
-              {/* <div className="bg-white bg-opacity-50 rounded-lg p-5 border border-amber-200">
-                <h3 className="text-lg font-semibold text-amber-800 mb-3">
-                  Development Board Status
-                </h3>
-                <ul className="space-y-2">
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                    <span className="text-amber-700">
-                      Current OHW development board is running without security
-                      locks or SE security components enabled.{" "}
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                    <span className="text-amber-700">
-                      Stay tuned for upcoming tutorials on chip security locking
-                      and high-security hardware wallet solutions.
-                    </span>
-                  </li>
-                </ul>
-              </div> */}
             </div>
 
             <div className="mt-6 text-center">
@@ -836,38 +977,45 @@ export function TestPage() {
                   )}
                 </div>
               </div>
-              
+
               {ohw && (
                 <div className="mt-4">
-                  <span className="text-gray-600 text-sm font-medium">Support Features:</span>
+                  <span className="text-gray-600 text-sm font-medium">
+                    Support Features:
+                  </span>
                   <div className="mt-2 space-y-2">
                     {[
                       { name: "Secure Boot", index: 0 },
-                      { name: "Flash Encryption", index: 1 },
+                      // { name: "Flash Encryption", index: 1 },
                       { name: "Bootloader", index: 2 },
                       { name: "Storage Init", index: 3 },
                       { name: "Hardware Rng", index: 4 },
                       { name: "Display & Input", index: 5 },
                       { name: "User Key", index: 6 },
                     ].map(({ name, index }) => (
-                      <div key={name} className="flex items-center justify-between text-xs">
+                      <div
+                        key={name}
+                        className="flex items-center justify-between text-xs"
+                      >
                         <span className="text-gray-600">{name}:</span>
                         <div className="flex items-center gap-2">
                           <div
                             className={`w-2 h-2 rounded-full ${
-                              supportFeature[index] === 1 
-                                ? "bg-green-500" 
+                              supportFeature[index] === 1
+                                ? "bg-green-500"
                                 : "bg-red-500"
                             }`}
                           />
                           <span
                             className={`font-medium ${
-                              supportFeature[index] === 1 
-                                ? "text-green-600" 
+                              supportFeature[index] === 1
+                                ? "text-green-600"
                                 : "text-red-600"
                             }`}
                           >
-                            {supportFeature[index] === 1 ? "Supported" : "Not Supported"}
+                            {supportFeature[index] === 1
+                              ? "Supported"
+                              : "Not Supported"}
                           </span>
                         </div>
                       </div>
@@ -875,7 +1023,7 @@ export function TestPage() {
                   </div>
                 </div>
               )}
-              
+
               {!ohw && connected && (
                 <div className="text-red-600 text-sm">
                   Missing ohw firmware. Please{" "}
@@ -898,51 +1046,128 @@ export function TestPage() {
             <h2 className="text-xl font-semibold mb-4">
               Wallet Initialization
             </h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Mnemonic
-                </label>
-                <textarea
-                  className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                  rows={4}
-                  value={mnemonic}
-                  disabled={initialized}
-                  onChange={(e) => setMnemonic(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Salt Passphrase (Optional)
-                </label>
-                <p className="text-xs text-gray-500 mb-2">
-                  Leave blank if unsure.
-                </p>
-                <input
-                  type="password"
-                  className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                  value={password}
-                  disabled={initialized}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {!initialized && ohw && (
-                <div className="flex gap-4">
-                  <button
-                    onClick={initWalletCustom}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Import
-                  </button>
-                  <button
-                    onClick={initWallet}
-                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Generate
-                  </button>
+            {ohw && supportFeature[5] === 1 && !initialized ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-blue-200 rounded-lg">
+                    <svg className="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-blue-900">Hardware Screen Detected</h3>
                 </div>
-              )}
-            </div>
+                <div className="space-y-3">
+                  <p className="text-blue-800">
+                    Your device has a screen and input buttons. Please use the hardware interface to initialize your wallet for better security.
+                  </p>
+                  <div className="bg-white rounded-lg p-4 border border-blue-200">
+                    <h4 className="font-medium text-blue-900 mb-2">To initialize on hardware</h4>
+                  </div>
+                  <p className="text-sm text-blue-600">
+                    After initialization is complete, refresh this page or reconnect your device.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mnemonic
+                  </label>
+                  <textarea
+                    className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    rows={4}
+                    value={mnemonic}
+                    disabled={initialized || (ohw && supportFeature[5] === 1)}
+                    onChange={(e) => handleMnemonicChange(e.target.value)}
+                    placeholder="Enter your 12+ word mnemonic phrase separated by spaces"
+                  />
+                  <div className="mt-2">
+                    <p className="text-xs text-gray-500">
+                      Enter at least 12 words separated by spaces. Only letters are allowed.
+                    </p>
+                    {mnemonicErrors.length > 0 && (
+                      <div className="mt-1 text-red-600 text-xs">
+                        {mnemonicErrors.map((error, index) => (
+                          <div key={index}>• {error}</div>
+                        ))}
+                      </div>
+                    )}
+                    {isMnemonicValid && (
+                      <div className="mt-1 text-green-600 text-xs">
+                        ✓ Mnemonic phrase is valid ({mnemonic.trim().split(/\s+/).filter(w => w.length > 0).length} words)
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <PasswordInput
+                      label="Wallet PIN (Password) *"
+                      value={password}
+                      onChange={handlePasswordChange}
+                      disabled={initialized || (ohw && supportFeature[5] === 1)}
+                      placeholder="Enter wallet PIN"
+                      autoComplete="new-password"
+                    />
+                    <div className="mt-2">
+                      <p className="text-xs text-gray-500">
+                        PIN must be longer than 8 characters and contain uppercase letters, lowercase letters, and numbers
+                      </p>
+                      {passwordErrors.length > 0 && (
+                        <div className="mt-1 text-red-600 text-xs">
+                          {passwordErrors.map((error, index) => (
+                            <div key={index}>• {error}</div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Show confirm password field only when main password is valid */}
+                  {isPasswordValid && (
+                    <div>
+                      <PasswordInput
+                        label="Confirm Wallet PIN *"
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                        disabled={initialized || (ohw && supportFeature[5] === 1)}
+                        placeholder="Confirm wallet PIN"
+                        autoComplete="new-password"
+                      />
+                      {confirmError && (
+                        <div className="mt-1 text-red-600 text-xs">
+                          • {confirmError}
+                        </div>
+                      )}
+                      {doPasswordsMatch && (
+                        <div className="mt-1 text-green-600 text-xs">
+                          ✓ PINs match
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {!initialized && ohw && supportFeature[5] !== 1 && (
+                  <div className="flex gap-4">
+                    <button
+                      onClick={initWalletCustom}
+                      disabled={!isWalletPinReady || !isMnemonicValid}
+                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Import
+                    </button>
+                    <button
+                      onClick={initWallet}
+                      disabled={!isWalletPinReady}
+                      className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Generate
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Address Management Card */}
@@ -1034,6 +1259,9 @@ export function TestPage() {
                   className="flex-1 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                   value={walletKitUri}
                   onChange={(e) => setWalletKitUri(e.target.value)}
+                  autoComplete="off"
+                  data-form-type="other"
+                  data-lpignore="true"
                 />
                 {address && walletKitUri && (
                   <button
@@ -1139,7 +1367,10 @@ export default function useConfirm() {
           </p>
         </div>
         <div className="flex gap-2 justify-end mt-4 pt-4 border-t">
-          <button onClick={handleCancel} className="px-4 py-2 border rounded hover:bg-gray-50">
+          <button
+            onClick={handleCancel}
+            className="px-4 py-2 border rounded hover:bg-gray-50"
+          >
             Cancel
           </button>
           <button
@@ -1154,4 +1385,181 @@ export default function useConfirm() {
   ) : null;
 
   return { confirm, Dialog };
+}
+
+// PIN validation function
+function validatePinStrength(pin: string): {
+  isValid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  if (pin.length < 8) {
+    errors.push("PIN must be longer than 8 characters");
+  }
+
+  if (!/[0-9]/.test(pin)) {
+    errors.push("PIN must contain at least one number");
+  }
+
+  if (!/[a-z]/.test(pin)) {
+    errors.push("PIN must contain at least one lowercase letter");
+  }
+
+  if (!/[A-Z]/.test(pin)) {
+    errors.push("PIN must contain at least one uppercase letter");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+// Mnemonic validation function
+function validateMnemonic(mnemonic: string): {
+  isValid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  if (!mnemonic || mnemonic.trim() === "") {
+    errors.push("Mnemonic phrase is required");
+    return { isValid: false, errors };
+  }
+
+  // Check for only letters and spaces
+  if (!/^[a-zA-Z\s]+$/.test(mnemonic.trim())) {
+    errors.push("Mnemonic phrase can only contain letters and spaces");
+  }
+
+  // Split by whitespace and filter out empty strings
+  const words = mnemonic.trim().split(/\s+/).filter(word => word.length > 0);
+
+  if (words.length < 12) {
+    errors.push(`Mnemonic phrase must contain at least 12 words (currently ${words.length})`);
+  }
+
+  // Check if each word contains only letters
+  words.forEach((word, index) => {
+    if (!/^[a-zA-Z]+$/.test(word)) {
+      errors.push(`Word ${index + 1} "${word}" contains invalid characters`);
+    }
+  });
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+function usePinInput() {
+  const [show, setShow] = useState(false);
+  const [resolver, setResolver] = useState<(value: string | boolean) => void>();
+  const [pin, setPin] = useState("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [isCheckMode, setIsCheckMode] = useState(false);
+
+  const requestPin = useCallback((checkMode: boolean = false) => {
+    setPin("");
+    setValidationErrors([]);
+    setIsCheckMode(checkMode);
+    setShow(true);
+    return new Promise<string | boolean>((resolve) => {
+      setResolver(() => resolve);
+    });
+  }, []);
+
+  const handleConfirm = () => {
+    if (isCheckMode) {
+      resolver?.(true);
+      setShow(false);
+    } else {
+      const validation = validatePinStrength(pin);
+      if (validation.isValid) {
+        resolver?.(pin);
+        setShow(false);
+        setPin("");
+        setValidationErrors([]);
+      } else {
+        setValidationErrors(validation.errors);
+      }
+    }
+  };
+
+  const PinDialog = show ? (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        {isCheckMode ? (
+          <>
+            <h3 className="text-lg font-semibold mb-4 text-center">Device Unlock Check</h3>
+            <p className="text-sm text-gray-600 mb-6 text-center">
+              Please unlock your device using the hardware buttons, then click &quot;Check Status&quot; to verify.
+            </p>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={handleConfirm}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Check Status
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h3 className="text-lg font-semibold mb-4 text-center">Enter PIN</h3>
+            <p className="text-sm text-gray-600 mb-4 text-center">
+              Please enter your device PIN to unlock
+            </p>
+            <div className="mb-6">
+              <PasswordInput
+                value={pin}
+                onChange={(value) => {
+                  setPin(value);
+                  // Clear validation errors when user starts typing
+                  if (validationErrors.length > 0) {
+                    setValidationErrors([]);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleConfirm();
+                  }
+                }}
+                className="text-center text-lg border-2"
+                placeholder="Enter PIN"
+                maxLength={50}
+                autoComplete="new-password"
+                autoFocus={true}
+              />
+              <div className="mt-2 text-center">
+                <p className="text-xs text-gray-500">
+                  PIN must be longer than 8 characters and contain uppercase
+                  letters, lowercase letters, and numbers
+                </p>
+                {validationErrors.length > 0 && (
+                  <div className="mt-2 text-red-600 text-xs">
+                    {validationErrors.map((error, index) => (
+                      <div key={index}>• {error}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-4 justify-center">
+              
+              <button
+                onClick={handleConfirm}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Unlock
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  ) : null;
+
+  return { requestPin, PinDialog };
 }
