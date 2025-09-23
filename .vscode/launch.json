@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "Chrome",
       "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/app",
+      "webRoot": "${workspaceFolder}",
       "smartStep": true,
     }
   ]
