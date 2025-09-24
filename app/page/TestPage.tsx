@@ -132,7 +132,7 @@ export function TestPage() {
   //  * - buffer[0]: Secure Boot
   //  * - buffer[1]: Flash Encryption
   //  * - buffer[2]: Bootloader
-  //  * - buffer[3]: Storage Init
+  //  * - buffer[3]: Storage
   //  * - buffer[4]: Hardware Rng support
   //  * - buffer[5]: Display & Input support
   //  * - buffer[6]: User Key support
@@ -142,9 +142,9 @@ export function TestPage() {
   //  * The buffer content represents:
   //  * - buffer[0]: Storage Init
   //  * - buffer[1]: Lock status
-  // const [hardwareStatus, setHardwareStatus] = useState<Uint8Array>(
-  //   new Uint8Array(16),
-  // );
+  const [hardwareStatus, setHardwareStatus] = useState<Uint8Array>(
+    new Uint8Array(16),
+  );
 
   const [path, setPath] = useAtom(pathAtom);
 
@@ -245,15 +245,46 @@ export function TestPage() {
             setMnemonic(
               "Initialization has been completed. Scroll down to use more functions.",
             );
-            getStatus();
           }
+          getStatus();
           break;
         }
         case "statusResponse": {
           const statusMask = data.payload.statusResponse.statusMask;
-          // setHardwareStatus(statusMask);
+          setHardwareStatus(statusMask);
 
           const feature = store.get(supportFeatureAtom);
+
+          // Check if Storage is supported but Storage Init failed
+          const hasStorageSupport = feature[3] === 1;
+          const isStorageInitialized = statusMask[0] === 1;
+
+          console.log("StatusMask values:", Array.from(statusMask));
+          console.log("Feature values:", Array.from(feature));
+          
+          if (hasStorageSupport && !isStorageInitialized) {
+            const storageInitMessage = 
+              "Storage initialization failed!\n\n" +
+              "Your device supports storage, but storage initialization has failed. " +
+              "This may cause data loss after power off.\n\n" +
+              "Please try the following steps:\n" +
+              "1. Completely erase the flash memory before flashing firmware\n" +
+              "2. Re-flash the firmware\n" +
+              "3. Try initializing again\n\n" +
+              "Would you like to go to the firmware flashing page?";
+
+            confirm(storageInitMessage).then((shouldGoToFlash) => {
+              if (shouldGoToFlash) {
+                window.open("https://espressif.github.io/esptool-js/", "_blank");
+              }
+            });
+            
+            // Disconnect the device due to storage initialization failure
+            serialManager.close();
+            setOHW(false);
+            setInitialized(false);
+            return;
+          }
 
           const isLocked = statusMask[1] === 1;
 
@@ -988,7 +1019,7 @@ export function TestPage() {
                       { name: "Secure Boot", index: 0 },
                       // { name: "Flash Encryption", index: 1 },
                       { name: "Bootloader", index: 2 },
-                      { name: "Storage Init", index: 3 },
+                      { name: "Storage", index: 3 },
                       { name: "Hardware Rng", index: 4 },
                       { name: "Display & Input", index: 5 },
                       { name: "User Key", index: 6 },
@@ -1021,6 +1052,69 @@ export function TestPage() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Hardware Status Display */}
+                  {initialized && (
+                    <div className="mt-4">
+                      <span className="text-gray-600 text-sm font-medium">
+                        Hardware Status:
+                      </span>
+                      <div className="mt-2 space-y-2">
+                        {[
+                          { name: "Storage Init", index: 0, dependsOn: 3 }, // Storage Init depends on Storage support
+                          { name: "Device Lock", index: 1 },
+                        ].map(({ name, index, dependsOn }) => {
+                          // If dependsOn is specified, check if the dependency is supported
+                          const isDependencyMet = dependsOn === undefined || supportFeature[dependsOn] === 1;
+                          const statusValue = hardwareStatus[index];
+                          
+                          // Special handling for Storage Init
+                          let statusColor, statusText;
+                          if (name === "Storage Init") {
+                            if (!isDependencyMet) {
+                              statusColor = "bg-gray-400";
+                              statusText = "N/A (No Storage Support)";
+                            } else if (statusValue === 1) {
+                              statusColor = "bg-green-500";
+                              statusText = "Initialized";
+                            } else {
+                              statusColor = "bg-red-500";
+                              statusText = "Failed";
+                            }
+                          } else if (name === "Device Lock") {
+                            statusColor = statusValue === 1 ? "bg-red-500" : "bg-green-500";
+                            statusText = statusValue === 1 ? "Locked" : "Unlocked";
+                          } else {
+                            statusColor = statusValue === 1 ? "bg-green-500" : "bg-red-500";
+                            statusText = statusValue === 1 ? "OK" : "Error";
+                          }
+
+                          return (
+                            <div
+                              key={name}
+                              className="flex items-center justify-between text-xs"
+                            >
+                              <span className="text-gray-600">{name}:</span>
+                              <div className="flex items-center gap-2">
+                                <div className={`w-2 h-2 rounded-full ${statusColor}`} />
+                                <span className={`font-medium ${
+                                  name === "Storage Init" && !isDependencyMet 
+                                    ? "text-gray-600"
+                                    : name === "Storage Init" && statusValue !== 1 && isDependencyMet
+                                    ? "text-red-600"
+                                    : name === "Device Lock" && statusValue === 1
+                                    ? "text-red-600"
+                                    : "text-green-600"
+                                }`}>
+                                  {statusText}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 

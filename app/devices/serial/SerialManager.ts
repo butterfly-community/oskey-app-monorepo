@@ -75,6 +75,8 @@ export class SerialManager {
       await this.port.close().catch(() => {});
     }
     this.buffer = new Uint8Array(0);
+    
+    this.readingStateHandler?.(false);
   }
 
   private async startReading(): Promise<void> {
