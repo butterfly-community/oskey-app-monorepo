@@ -876,11 +876,11 @@ export function TestPage() {
 
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
-        <div className="mb-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">
+        <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <h1 className="text-2xl font-bold text-gray-900">
             OSKey Hardware Wallet
           </h1>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={() =>
                 window.open("https://espressif.github.io/esptool-js/", "_blank")
@@ -891,7 +891,7 @@ export function TestPage() {
             </button>
             <button
               onClick={handleConnect}
-              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-lg flex items-center justify-center gap-2 ${
                 connected
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-gray-600 hover:bg-gray-700"
