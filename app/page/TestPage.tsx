@@ -906,7 +906,7 @@ export function TestPage() {
         </div>
 
         {/* Warning Card */}
-        <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl shadow-sm p-8 mb-8 border border-amber-200">
+        {/* <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl shadow-sm p-8 mb-8 border border-amber-200">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-amber-200 rounded-lg">
@@ -989,7 +989,7 @@ export function TestPage() {
               </a>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Device Status Card */}
