@@ -64,7 +64,9 @@ export function TestPage() {
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [confirmError, setConfirmError] = useState("");
   const [mnemonicErrors, setMnemonicErrors] = useState<string[]>([]);
+  const [userActionPrompt, setUserActionPrompt] = useState<string | null>(null);
   const [address, setAddress] = useAtom(addressAtom);
+  const clearUserActionPrompt = useCallback(() => setUserActionPrompt(null), []);
 
   // Password validation and handling
   const handlePasswordChange = (value: string) => {
@@ -205,6 +207,7 @@ export function TestPage() {
   useEffect(() => {
     serialManager.onMessage((data) => {
       console.log(data.payload);
+      clearUserActionPrompt();
       switch (data.payload.oneofKind) {
         case "versionResponse": {
           const version = data.payload.versionResponse;
@@ -353,6 +356,12 @@ export function TestPage() {
 
           break;
         }
+        case "waitForUserActionResponse": {
+          setUserActionPrompt(
+            "Please confirm the action on the device screen or press the USER key to continue.",
+          );
+          break;
+        }
         default:
           console.log("Error Data");
       }
@@ -365,7 +374,7 @@ export function TestPage() {
     return () => {
       serialManager.close();
     };
-  }, [serialManager]);
+  }, [serialManager, clearUserActionPrompt]);
 
   const initWalletKitEvent = async () => {
     console.log("walletconnect", "init");
@@ -873,6 +882,10 @@ export function TestPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       {Dialog}
       {PinDialog}
+      <UserActionModal
+        message={userActionPrompt}
+        onDismiss={clearUserActionPrompt}
+      />
 
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
@@ -1431,6 +1444,56 @@ export function TestPage() {
               )}
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UserActionModal({
+  message,
+  onDismiss,
+}: {
+  message: string | null;
+  onDismiss: () => void;
+}) {
+  if (!message) {
+    return null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 p-4">
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
+        <div className="p-6 space-y-4 text-center">
+          <div className="mx-auto w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 text-blue-600">
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Device Action Required
+            </h3>
+            <p className="mt-2 text-sm text-gray-600 whitespace-pre-line">
+              {message}
+            </p>
+          </div>
+          <button
+            onClick={onDismiss}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Got it
+          </button>
         </div>
       </div>
     </div>
