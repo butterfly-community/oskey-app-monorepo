@@ -3,8 +3,8 @@ import { TestPage } from "../page/TestPage";
 
 export function meta() {
   return [
-    { title: "Wallet Connect - OSKey" },
-    { name: "description", content: "OSKey Hardware Wallet Connect Page" },
+    { title: "Settings - OSKey" },
+    { name: "description", content: "OSKey Connect Page" },
   ];
 }
 
