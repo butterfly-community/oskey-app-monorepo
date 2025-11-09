@@ -891,7 +891,7 @@ export function TestPage() {
         {/* Header Section */}
         <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <h1 className="text-2xl font-bold text-gray-900">
-            OSKey Hardware Wallet
+            OSKey
           </h1>
           <div className="flex flex-col sm:flex-row gap-4">
             <button

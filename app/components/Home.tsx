@@ -221,16 +221,13 @@ export function Home() {
 
       <section className="container mx-auto px-6 pb-28 pt-36">
         <div className="mx-auto max-w-5xl text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-gray-500 sm:tracking-[0.45em]">
-            OSKey Hardware Wallet
-          </p>
           <h1 className="mt-6 text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
             Build the most trusted key in your digital life.
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-gray-600 sm:text-xl">
-            OSKey is a community-built, fully open hardware wallet platform.
-            Assemble it yourself, audit every line, and keep your credentials
-            anchored in silicon you control.
+            OSKey is a community-built, fully open hardware platform. Assemble
+            it yourself, audit every line, and keep your credentials anchored in
+            silicon you control.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <a
@@ -306,8 +303,8 @@ export function Home() {
               </h3>
               <p className="mt-4 text-sm leading-relaxed text-gray-600">
                 The core OSKey firmware is tuned for constrained environments
-                without compromising on cryptographic assurance. Every release is
-                validated through community-reviewed test suites.
+                without compromising on cryptographic assurance. Every release
+                is validated through community-reviewed test suites.
               </p>
               <ul className="mt-8 space-y-4">
                 {capabilityCards.map((card) => (
@@ -347,9 +344,9 @@ export function Home() {
             Bring your own development board — or pick a curated starting point.
           </h2>
           <p className="text-lg leading-relaxed text-gray-600">
-            OSKey runs on hundreds of boards across architectures. Start with our
-            recommended kits for instant testing, then scale into premium displays
-            and touch-first experiences as your project evolves.
+            OSKey runs on hundreds of boards across architectures. Start with
+            our recommended kits for instant testing, then scale into premium
+            displays and touch-first experiences as your project evolves.
           </p>
         </div>
         <div className="space-y-14">
@@ -358,12 +355,12 @@ export function Home() {
               Base experience
             </h3>
             <p className="text-sm leading-relaxed text-gray-600">
-              Four officially supported boards span three architectures and manufacturers,
-              underscoring OSKey’s vendor independence.
+              Four officially supported boards span three architectures and
+              manufacturers, underscoring OSKey’s vendor independence.
             </p>
             <p className="text-sm leading-relaxed text-gray-600">
-              More than 300 additional boards from 10+ chip makers are already supported
-              across the firmware (
+              More than 300 additional boards from 10+ chip makers are already
+              supported across the firmware (
               <a
                 href="https://docs.zephyrproject.org/latest/boards/index.html"
                 target="_blank"
@@ -392,7 +389,9 @@ export function Home() {
                     <h4 className="text-base font-semibold text-gray-900">
                       {board.name}
                     </h4>
-                    <p className="mt-2 text-xs text-gray-600">{board.architecture}</p>
+                    <p className="mt-2 text-xs text-gray-600">
+                      {board.architecture}
+                    </p>
                     <p className="mt-1 text-xs text-gray-400">
                       {board.manufacturer}
                     </p>
@@ -406,8 +405,9 @@ export function Home() {
               Full experience
             </h3>
             <p className="text-sm leading-relaxed text-gray-600">
-              Built on the same infrastructure yet equipped with display and touch modules,
-              enabling fully offline initialization and on-device transaction parsing.
+              Built on the same infrastructure yet equipped with display and
+              touch modules, enabling fully offline initialization and on-device
+              transaction parsing.
             </p>
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
               {premiumBoards.map((board) => (
@@ -447,9 +447,10 @@ export function Home() {
             Real hardware captures that showcase OSKey in action.
           </h2>
           <p className="text-lg leading-relaxed text-gray-600">
-            These photos are direct device shots demonstrating core capabilities—from the
-            guided setup to BIP39 generation, custom entropy, and BIP32 account indexing.
-            Click any label to open the corresponding hardware demo.
+            These photos are direct device shots demonstrating core
+            capabilities—from the guided setup to BIP39 generation, custom
+            entropy, and BIP32 account indexing. Click any label to open the
+            corresponding hardware demo.
           </p>
         </div>
         <div className="space-y-8">
@@ -482,12 +483,13 @@ export function Home() {
               Join the community
             </p>
             <h2 className="mt-6 text-4xl font-semibold text-gray-900">
-              Contribute firmware, design hardware, and refine the open wallet stack.
+              Contribute firmware, design hardware, and refine the open wallet
+              stack.
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-gray-600">
-              Get pre-built firmware or compile locally, share improvements with the
-              community, and help shape the next generation of verifiable hardware
-              wallets.
+              Get pre-built firmware or compile locally, share improvements with
+              the community, and help shape the next generation of verifiable
+              hardware wallets.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <a
@@ -520,8 +522,8 @@ export function Home() {
             Built with support from open communities.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-gray-600">
-            OSKey evolves alongside partners who champion transparent tooling and
-            collaborative hardware innovation.
+            OSKey evolves alongside partners who champion transparent tooling
+            and collaborative hardware innovation.
           </p>
         </div>
         <div className="mt-12 grid gap-8 sm:grid-cols-2">
@@ -579,7 +581,9 @@ export function Home() {
               >
                 {activeShot.step}
               </h3>
-              <p className="text-sm font-medium text-gray-700">{activeShot.label}</p>
+              <p className="text-sm font-medium text-gray-700">
+                {activeShot.label}
+              </p>
               <p className="text-sm leading-relaxed text-gray-600">
                 {activeShot.caption}
               </p>
