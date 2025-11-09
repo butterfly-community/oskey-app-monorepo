@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import type { MouseEvent } from "react";
 import { SerialManager } from "~/devices/serial/SerialManager";
 import {
   DerivePublicKeyRequest,
@@ -66,16 +67,19 @@ export function TestPage() {
   const [mnemonicErrors, setMnemonicErrors] = useState<string[]>([]);
   const [userActionPrompt, setUserActionPrompt] = useState<string | null>(null);
   const [address, setAddress] = useAtom(addressAtom);
-  const clearUserActionPrompt = useCallback(() => setUserActionPrompt(null), []);
+  const clearUserActionPrompt = useCallback(
+    () => setUserActionPrompt(null),
+    [],
+  );
 
   // Password validation and handling
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    
+
     // Clear previous errors
     setPasswordErrors([]);
     setConfirmError("");
-    
+
     // Validate password strength
     if (value) {
       const validation = validatePinStrength(value);
@@ -83,19 +87,19 @@ export function TestPage() {
         setPasswordErrors(validation.errors);
       }
     }
-    
+
     // Reset confirm password if main password changes
     setConfirmPassword("");
   };
 
   const handleConfirmPasswordChange = (value: string) => {
     setConfirmPassword(value);
-    
+
     // Clear confirm error when user starts typing
     if (confirmError) {
       setConfirmError("");
     }
-    
+
     // Check if passwords match
     if (value && password !== value) {
       setConfirmError("PINs do not match");
@@ -107,10 +111,10 @@ export function TestPage() {
   // Mnemonic validation and handling
   const handleMnemonicChange = (value: string) => {
     setMnemonic(value);
-    
+
     // Clear previous errors
     setMnemonicErrors([]);
-    
+
     // Validate mnemonic if not empty
     if (value.trim()) {
       const validation = validateMnemonic(value);
@@ -121,7 +125,8 @@ export function TestPage() {
   };
 
   const isPasswordValid = password && validatePinStrength(password).isValid;
-  const doPasswordsMatch = password && confirmPassword && password === confirmPassword;
+  const doPasswordsMatch =
+    password && confirmPassword && password === confirmPassword;
   const isWalletPinReady = isPasswordValid && doPasswordsMatch;
   const isMnemonicValid = mnemonic.trim() && validateMnemonic(mnemonic).isValid;
 
@@ -151,6 +156,8 @@ export function TestPage() {
   const [path, setPath] = useAtom(pathAtom);
 
   const [walletConnect, setWalletConnect] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
+  const [hasImported, setHasImported] = useState(false);
 
   const [activeSessions, setActiveSessions] = useState<SessionTypes.Struct[]>(
     [],
@@ -264,9 +271,9 @@ export function TestPage() {
 
           console.log("StatusMask values:", Array.from(statusMask));
           console.log("Feature values:", Array.from(feature));
-          
+
           if (hasStorageSupport && !isStorageInitialized) {
-            const storageInitMessage = 
+            const storageInitMessage =
               "Storage initialization failed!\n\n" +
               "Your device supports storage, but storage initialization has failed. " +
               "This may cause data loss after power off.\n\n" +
@@ -278,10 +285,13 @@ export function TestPage() {
 
             confirm(storageInitMessage).then((shouldGoToFlash) => {
               if (shouldGoToFlash) {
-                window.open("https://espressif.github.io/esptool-js/", "_blank");
+                window.open(
+                  "https://espressif.github.io/esptool-js/",
+                  "_blank",
+                );
               }
             });
-            
+
             // Disconnect the device due to storage initialization failure
             serialManager.close();
             setOHW(false);
@@ -292,9 +302,8 @@ export function TestPage() {
           const isLocked = statusMask[1] === 1;
 
           if (store.get(initializedAtom) && isLocked) {
-  
             const hasDisplayAndInput = feature[5] === 1;
-            
+
             if (hasDisplayAndInput) {
               requestPin(true).then((shouldCheck) => {
                 if (shouldCheck) {
@@ -303,7 +312,7 @@ export function TestPage() {
               });
             } else {
               requestPin(false).then((result) => {
-                if (typeof result === 'string') {
+                if (typeof result === "string") {
                   sendUnlock(result);
                 }
               });
@@ -779,6 +788,18 @@ export function TestPage() {
     await serialManager.sendProtobuf(initRequest);
   };
 
+  const handleGenerateClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.currentTarget.disabled = true;
+    setHasGenerated(true);
+    void initWallet();
+  };
+
+  const handleImportClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.currentTarget.disabled = true;
+    setHasImported(true);
+    void initWalletCustom();
+  };
+
   const derivePublicKey = async () => {
     const initRequest = ReqData.create({
       payload: {
@@ -810,7 +831,6 @@ export function TestPage() {
   };
 
   const sendUnlock = async (password: string) => {
-
     const unlockRequest = ReqData.create({
       payload: {
         oneofKind: "unlockRequest",
@@ -890,6 +910,7 @@ export function TestPage() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
         <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <h1 className="text-2xl font-bold text-gray-900"></h1>
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={() =>
@@ -1075,9 +1096,11 @@ export function TestPage() {
                           { name: "Device Lock", index: 1 },
                         ].map(({ name, index, dependsOn }) => {
                           // If dependsOn is specified, check if the dependency is supported
-                          const isDependencyMet = dependsOn === undefined || supportFeature[dependsOn] === 1;
+                          const isDependencyMet =
+                            dependsOn === undefined ||
+                            supportFeature[dependsOn] === 1;
                           const statusValue = hardwareStatus[index];
-                          
+
                           // Special handling for Storage Init
                           let statusColor, statusText;
                           if (name === "Storage Init") {
@@ -1092,10 +1115,13 @@ export function TestPage() {
                               statusText = "Failed";
                             }
                           } else if (name === "Device Lock") {
-                            statusColor = statusValue === 1 ? "bg-red-500" : "bg-green-500";
-                            statusText = statusValue === 1 ? "Locked" : "Unlocked";
+                            statusColor =
+                              statusValue === 1 ? "bg-red-500" : "bg-green-500";
+                            statusText =
+                              statusValue === 1 ? "Locked" : "Unlocked";
                           } else {
-                            statusColor = statusValue === 1 ? "bg-green-500" : "bg-red-500";
+                            statusColor =
+                              statusValue === 1 ? "bg-green-500" : "bg-red-500";
                             statusText = statusValue === 1 ? "OK" : "Error";
                           }
 
@@ -1106,16 +1132,23 @@ export function TestPage() {
                             >
                               <span className="text-gray-600">{name}:</span>
                               <div className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${statusColor}`} />
-                                <span className={`font-medium ${
-                                  name === "Storage Init" && !isDependencyMet 
-                                    ? "text-gray-600"
-                                    : name === "Storage Init" && statusValue !== 1 && isDependencyMet
-                                    ? "text-red-600"
-                                    : name === "Device Lock" && statusValue === 1
-                                    ? "text-red-600"
-                                    : "text-green-600"
-                                }`}>
+                                <div
+                                  className={`w-2 h-2 rounded-full ${statusColor}`}
+                                />
+                                <span
+                                  className={`font-medium ${
+                                    name === "Storage Init" && !isDependencyMet
+                                      ? "text-gray-600"
+                                      : name === "Storage Init" &&
+                                          statusValue !== 1 &&
+                                          isDependencyMet
+                                        ? "text-red-600"
+                                        : name === "Device Lock" &&
+                                            statusValue === 1
+                                          ? "text-red-600"
+                                          : "text-green-600"
+                                  }`}
+                                >
                                   {statusText}
                                 </span>
                               </div>
@@ -1154,26 +1187,51 @@ export function TestPage() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 bg-blue-200 rounded-lg">
-                    <svg className="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    <svg
+                      className="w-6 h-6 text-blue-700"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-blue-900">Hardware Screen Detected</h3>
+                  <h3 className="text-lg font-semibold text-blue-900">
+                    Hardware Screen Detected
+                  </h3>
                 </div>
                 <div className="space-y-3">
                   <p className="text-blue-800">
-                    Your device has a display. Please use the hardware interface to initialize your wallet for better security.
+                    Your device has a display. Please use the hardware interface
+                    to initialize your wallet for better security.
                   </p>
                   <div className="bg-white rounded-lg p-4 border border-blue-200">
-                    <h4 className="font-medium text-blue-900 mb-2">To initialize on hardware</h4>
+                    <h4 className="font-medium text-blue-900 mb-2">
+                      To initialize on hardware
+                    </h4>
                   </div>
                   <div className="flex justify-center">
                     <button
                       onClick={getVersion}
                       className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
                       </svg>
                       Check Status
                     </button>
@@ -1182,101 +1240,136 @@ export function TestPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Mnemonic
-                  </label>
-                  <textarea
-                    className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    rows={4}
-                    value={mnemonic}
-                    disabled={initialized || (ohw && supportFeature[5] === 1)}
-                    onChange={(e) => handleMnemonicChange(e.target.value)}
-                    placeholder="Enter your 12+ word mnemonic phrase separated by spaces"
-                  />
-                  <div className="mt-2">
-                    <p className="text-xs text-gray-500">
-                      Enter at least 12 words separated by spaces. Only letters are allowed.
-                    </p>
-                    {mnemonicErrors.length > 0 && (
-                      <div className="mt-1 text-red-600 text-xs">
-                        {mnemonicErrors.map((error, index) => (
-                          <div key={index}>• {error}</div>
-                        ))}
-                      </div>
-                    )}
-                    {isMnemonicValid && (
-                      <div className="mt-1 text-green-600 text-xs">
-                        ✓ Mnemonic phrase is valid ({mnemonic.trim().split(/\s+/).filter(w => w.length > 0).length} words)
-                      </div>
-                    )}
+                {initialized ? (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
+                    Wallet initialization is complete. You can now manage your
+                    wallet using the controls below.
                   </div>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <PasswordInput
-                      label="Wallet PIN (Password) *"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      disabled={initialized || (ohw && supportFeature[5] === 1)}
-                      placeholder="Enter wallet PIN"
-                      autoComplete="new-password"
-                    />
-                    <div className="mt-2">
-                      <p className="text-xs text-gray-500">
-                        PIN must be longer than 8 characters and contain uppercase letters, lowercase letters, and numbers
-                      </p>
-                      {passwordErrors.length > 0 && (
-                        <div className="mt-1 text-red-600 text-xs">
-                          {passwordErrors.map((error, index) => (
-                            <div key={index}>• {error}</div>
-                          ))}
+                ) : (
+                  <>
+                    <div className="space-y-4">
+                      <div>
+                        <PasswordInput
+                          label="Wallet PIN (Password) *"
+                          value={password}
+                          onChange={handlePasswordChange}
+                          disabled={
+                            initialized || (ohw && supportFeature[5] === 1)
+                          }
+                          placeholder="Enter wallet PIN"
+                          autoComplete="new-password"
+                        />
+                        <div className="mt-2">
+                          <p className="text-xs text-gray-500">
+                            PIN must be longer than 8 characters and contain
+                            uppercase letters, lowercase letters, and numbers
+                          </p>
+                          {passwordErrors.length > 0 && (
+                            <div className="mt-1 text-red-600 text-xs">
+                              {passwordErrors.map((error, index) => (
+                                <div key={index}>• {error}</div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </div>
+                      </div>
 
-                  {/* Show confirm password field only when main password is valid */}
-                  {isPasswordValid && (
-                    <div>
-                      <PasswordInput
-                        label="Confirm Wallet PIN *"
-                        value={confirmPassword}
-                        onChange={handleConfirmPasswordChange}
-                        disabled={initialized || (ohw && supportFeature[5] === 1)}
-                        placeholder="Confirm wallet PIN"
-                        autoComplete="new-password"
-                      />
-                      {confirmError && (
-                        <div className="mt-1 text-red-600 text-xs">
-                          • {confirmError}
-                        </div>
-                      )}
-                      {doPasswordsMatch && (
-                        <div className="mt-1 text-green-600 text-xs">
-                          ✓ PINs match
+                      {/* Show confirm password field only when main password is valid */}
+                      {isPasswordValid && (
+                        <div>
+                          <PasswordInput
+                            label="Confirm Wallet PIN *"
+                            value={confirmPassword}
+                            onChange={handleConfirmPasswordChange}
+                            disabled={
+                              initialized || (ohw && supportFeature[5] === 1)
+                            }
+                            placeholder="Confirm wallet PIN"
+                            autoComplete="new-password"
+                          />
+                          {confirmError && (
+                            <div className="mt-1 text-red-600 text-xs">
+                              • {confirmError}
+                            </div>
+                          )}
+                          {doPasswordsMatch && (
+                            <div className="mt-1 text-green-600 text-xs">
+                              ✓ PINs match
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
-                {!initialized && ohw && supportFeature[5] !== 1 && (
-                  <div className="flex gap-4">
-                    <button
-                      onClick={initWalletCustom}
-                      disabled={!isWalletPinReady || !isMnemonicValid}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                      Import
-                    </button>
-                    <button
-                      onClick={initWallet}
-                      disabled={!isWalletPinReady}
-                      className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                      Generate
-                    </button>
-                  </div>
+                    {isPasswordValid && (
+                      <>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Mnemonic
+                          </label>
+                          <textarea
+                            className="w-full p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            rows={4}
+                            value={mnemonic}
+                            disabled={
+                              initialized || (ohw && supportFeature[5] === 1)
+                            }
+                            onChange={(e) =>
+                              handleMnemonicChange(e.target.value)
+                            }
+                            placeholder="Enter your 12+ word mnemonic phrase separated by spaces"
+                          />
+                          <div className="mt-2">
+                            <p className="text-xs text-gray-500">
+                              Enter at least 12 words separated by spaces. Only
+                              letters are allowed.
+                            </p>
+                            {mnemonicErrors.length > 0 && (
+                              <div className="mt-1 text-red-600 text-xs">
+                                {mnemonicErrors.map((error, index) => (
+                                  <div key={index}>• {error}</div>
+                                ))}
+                              </div>
+                            )}
+                            {isMnemonicValid && (
+                              <div className="mt-1 text-green-600 text-xs">
+                                ✓ Mnemonic phrase is valid (
+                                {
+                                  mnemonic
+                                    .trim()
+                                    .split(/\s+/)
+                                    .filter((w) => w.length > 0).length
+                                }{" "}
+                                words)
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {!initialized && ohw && supportFeature[5] !== 1 && (
+                          <div className="flex gap-4">
+                            <button
+                              onClick={handleImportClick}
+                              disabled={
+                                hasImported ||
+                                !isWalletPinReady ||
+                                !isMnemonicValid
+                              }
+                              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            >
+                              Import
+                            </button>
+                            <button
+                              onClick={handleGenerateClick}
+                              disabled={hasGenerated || !isWalletPinReady}
+                              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            >
+                              Generate
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -1596,10 +1689,15 @@ function validateMnemonic(mnemonic: string): {
   }
 
   // Split by whitespace and filter out empty strings
-  const words = mnemonic.trim().split(/\s+/).filter(word => word.length > 0);
+  const words = mnemonic
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0);
 
   if (words.length < 12) {
-    errors.push(`Mnemonic phrase must contain at least 12 words (currently ${words.length})`);
+    errors.push(
+      `Mnemonic phrase must contain at least 12 words (currently ${words.length})`,
+    );
   }
 
   // Check if each word contains only letters
@@ -1654,9 +1752,12 @@ function usePinInput() {
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         {isCheckMode ? (
           <>
-            <h3 className="text-lg font-semibold mb-4 text-center">Device Unlock Check</h3>
+            <h3 className="text-lg font-semibold mb-4 text-center">
+              Device Unlock Check
+            </h3>
             <p className="text-sm text-gray-600 mb-6 text-center">
-              Please unlock your device using the hardware buttons, then click &quot;Check Status&quot; to verify.
+              Please unlock your device using the hardware buttons, then click
+              &quot;Check Status&quot; to verify.
             </p>
             <div className="flex gap-4 justify-center">
               <button
@@ -1669,7 +1770,9 @@ function usePinInput() {
           </>
         ) : (
           <>
-            <h3 className="text-lg font-semibold mb-4 text-center">Enter PIN</h3>
+            <h3 className="text-lg font-semibold mb-4 text-center">
+              Enter PIN
+            </h3>
             <p className="text-sm text-gray-600 mb-4 text-center">
               Please enter your device PIN to unlock
             </p>
@@ -1709,7 +1812,6 @@ function usePinInput() {
               </div>
             </div>
             <div className="flex gap-4 justify-center">
-              
               <button
                 onClick={handleConfirm}
                 className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
