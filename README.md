@@ -1,6 +1,6 @@
-# Open Hardware Wallet Frontend Interface
+# OSKey Frontend Interface
 
-The Open Hardware Wallet frontend application provides a web interface for interacting with OSKey hardware devices. This application allows users to initialize devices, manage cryptocurrency addresses, and sign transactions directly through their browser.
+The OSKey frontend application provides a web interface for interacting with OSKey hardware devices. This application allows users to initialize devices, manage cryptocurrency addresses, and sign transactions directly through their browser.
 
 ## Features
 
