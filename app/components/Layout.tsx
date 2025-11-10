@@ -7,6 +7,7 @@ export function Header() {
   const navItems = [
     { label: "Settings", to: "/settings", type: "internal" as const },
     { label: "Blog", to: "/blog", type: "internal" as const },
+    { label: "Donate", to: "/donate", type: "internal" as const },
     {
       label: "Documentation",
       href: "https://github.com/butterfly-community/oskey-firmware/tree/master/doc/start",

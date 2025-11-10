@@ -3,10 +3,10 @@ import { Home } from "../components/Home";
 
 export function meta() {
   return [
-    { title: "OSKey - Open Hardware Wallet" },
+    { title: "OSKey" },
     {
       name: "description",
-      content: "Secure, open-source hardware wallet solution",
+      content: "Secure, open-source hardware solution",
     },
   ];
 }
