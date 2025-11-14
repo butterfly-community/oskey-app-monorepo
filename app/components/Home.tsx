@@ -96,7 +96,7 @@ const premiumBoards = [
 const demoSteps = [
   {
     step: "Boot screen",
-    subtext: "See the OSKey boot interface captured directly from hardware.",
+    subtext: "",
     shots: [
       {
         id: "demo-1a",
@@ -104,7 +104,7 @@ const demoSteps = [
         caption: "OSKey boot logo displayed as the device powers on.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-1a.jpg",
-        alt: "OSKey boot logo on device display",
+        alt: "",
       },
       {
         id: "demo-1b",
@@ -112,13 +112,13 @@ const demoSteps = [
         caption: "Choose to generate a new mnemonic or import an existing one.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-1b.jpg",
-        alt: "OSKey init screen with generate or import options",
+        alt: "",
       },
     ],
   },
   {
     step: "Generate mnemonic",
-    subtext: "BIP39 words generated and verified entirely on hardware.",
+    subtext: "",
     shots: [
       {
         id: "demo-2a",
@@ -126,7 +126,7 @@ const demoSteps = [
         caption: "Select mnemonic creation from the on-device menu.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-2a.jpg",
-        alt: "OSKey menu showing mnemonic generation option",
+        alt: "",
       },
       {
         id: "demo-2b",
@@ -134,7 +134,7 @@ const demoSteps = [
         caption: "Review freshly generated BIP39 words on-screen.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-2b.jpg",
-        alt: "Fresh mnemonic words displayed on OSKey screen",
+        alt: "",
       },
       {
         id: "demo-2c",
@@ -142,13 +142,13 @@ const demoSteps = [
         caption: "Confirm each word before locking them into secure storage.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-2c.jpg",
-        alt: "Mnemonic verification screen on OSKey device",
+        alt: "",
       },
     ],
   },
   {
     step: "Custom generate mnemonic",
-    subtext: "Blend OSKey entropy with your own randomness before sealing.",
+    subtext: "",
     shots: [
       {
         id: "demo-2a-custom",
@@ -156,7 +156,7 @@ const demoSteps = [
         caption: "Kick off custom generation with user-supplied entropy.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-2a.jpg",
-        alt: "OSKey menu prepared for custom entropy input",
+        alt: "",
       },
       {
         id: "demo-3a",
@@ -164,7 +164,7 @@ const demoSteps = [
         caption: "Capture manual randomness with guided prompts.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-3a.jpg",
-        alt: "OSKey device capturing user entropy",
+        alt: "",
       },
       {
         id: "demo-3b",
@@ -172,13 +172,13 @@ const demoSteps = [
         caption: "Review and confirm the blended entropy output.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-3b.jpg",
-        alt: "Manual entropy confirmation on OSKey display",
+        alt: "",
       },
     ],
   },
   {
     step: "Import mnemonic",
-    subtext: "Restore existing wallets without exposing secrets to a host.",
+    subtext: "",
     shots: [
       {
         id: "demo-4a",
@@ -186,13 +186,13 @@ const demoSteps = [
         caption: "Enter existing words through the secure keypad interface.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-4a.jpg",
-        alt: "Entering mnemonic words on OSKey keypad",
+        alt: "",
       },
     ],
   },
   {
     step: "Index",
-    subtext: "BIP32 derivations give you an overview of every account.",
+    subtext: "",
     shots: [
       {
         id: "demo-4b",
@@ -200,7 +200,29 @@ const demoSteps = [
         caption: "Browse derived accounts after initialization and imports.",
         image:
           "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-4b.jpg",
-        alt: "OSKey index view listing accounts",
+        alt: "",
+      },
+    ],
+  },
+  {
+    step: "Sign",
+    subtext: "",
+    shots: [
+      {
+        id: "demo-5a",
+        label: "Message signatures",
+        caption: "EIP191, Message signatures",
+        image:
+          "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-5a.jpg",
+        alt: "",
+      },
+      {
+        id: "demo-5b",
+        label: "Transaction signatures",
+        caption: "Transaction signatures",
+        image:
+          "https://raw.githubusercontent.com/butterfly-community/oskey-firmware/master/doc/image/demo/demo-5b.jpg",
+        alt: "",
       },
     ],
   },
