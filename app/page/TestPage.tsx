@@ -1163,7 +1163,7 @@ export function TestPage() {
 
               {!ohw && connected && (
                 <div className="text-red-600 text-sm">
-                  Missing ohw firmware. Please{" "}
+                  Missing OSKey firmware. Please{" "}
                   <a
                     href="https://github.com/butterfly-community/oskey-firmware"
                     target="_blank"
