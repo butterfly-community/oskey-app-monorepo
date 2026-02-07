@@ -26,3 +26,4 @@ cd oskey-app-monorepo
 pnpm install
 pnpm run dev
 ```
+
